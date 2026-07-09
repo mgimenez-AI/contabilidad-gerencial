@@ -315,6 +315,17 @@ button {
   margin: 0 0 12px;
 }
 
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.section-heading p {
+  margin: 0;
+}
+
 .lesson {
   border-top: 1px solid var(--line);
   padding: 14px 0;
@@ -344,6 +355,99 @@ button {
 .topic-block > h3 {
   color: var(--primary-dark);
   margin-bottom: 8px;
+}
+
+.topic-page-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.32fr) minmax(0, 0.68fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.syllabus-card {
+  position: sticky;
+  top: 18px;
+}
+
+.back-btn {
+  margin-bottom: 14px;
+}
+
+.syllabus-group {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.syllabus-group summary {
+  cursor: pointer;
+  padding: 12px 14px;
+  font-weight: 800;
+  color: var(--primary-dark);
+  background: #f7fafc;
+}
+
+.syllabus-items {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+}
+
+.syllabus-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  padding: 10px;
+  text-align: left;
+  color: var(--ink);
+}
+
+.syllabus-link:hover,
+.syllabus-link.active {
+  border-color: #b8c7dc;
+  background: var(--soft-blue);
+}
+
+.syllabus-link small {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.breadcrumb {
+  color: var(--muted);
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.lead-text {
+  font-size: 18px;
+  color: #344054;
+  line-height: 1.7;
+}
+
+.topic-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+}
+
+.formula-panel {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fbfdff;
+  margin: 18px 0;
+}
+
+.formula-panel h4 {
+  margin-top: 0;
 }
 
 .formula {
@@ -550,8 +654,13 @@ button {
   .grid.two,
   .grid.three,
   .grid.two.wide-left,
+  .topic-page-layout,
   .exercise-layout {
     grid-template-columns: 1fr;
+  }
+
+  .syllabus-card {
+    position: static;
   }
 }
 

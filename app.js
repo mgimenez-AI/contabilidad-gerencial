@@ -4,6 +4,7 @@ const STORAGE_KEY = "contabilidad-gerencial-progress-v2";
 const state = {
   view: "dashboard",
   selectedUnit: "ut23",
+  selectedLesson: "ut23-l1",
   selectedExercise: DATA.guidedExercises[0].id,
   selectedRealExam: DATA.realExams[0].id,
   exerciseStep: 0,
@@ -41,10 +42,62 @@ function unitLessons(unit) {
   return (unit.topics || []).flatMap((topic) => topic.lessons || []);
 }
 
+function findLessonContext(lessonId = state.selectedLesson) {
+  for (const unit of DATA.units) {
+    for (const topic of unit.topics || []) {
+      const lesson = (topic.lessons || []).find((item) => item.id === lessonId);
+      if (lesson) return { unit, topic, lesson };
+    }
+  }
+  const unit = DATA.units.find((item) => item.id === state.selectedUnit) || DATA.units[0];
+  const topic = unit.topics[0];
+  return { unit, topic, lesson: topic.lessons[0] };
+}
+
+function relatedDeepDives(unit, lessonId) {
+  const map = {
+    "ut1-l1": [0], "ut1-l2": [0], "ut1-l3": [1], "ut1-l4": [1],
+    "ut1-l5": [2], "ut1-l6": [3],
+    "ut23-l1": [0], "ut23-l2": [0], "ut23-l3": [1], "ut23-l4": [2],
+    "ut23-l5": [3], "ut23-l6": [1, 2, 3], "ut23-l7": [4], "ut23-l8": [4],
+    "ut23-l9": [4], "ut23-l10": [5], "ut23-l11": [5], "ut23-l12": [5],
+    "ut3-l1": [0], "ut3-l2": [0], "ut3-l3": [1], "ut3-l4": [2],
+    "ut3-l5": [3], "ut3-l6": [4],
+    "ut4-l1": [0], "ut4-l2": [0], "ut4-l3": [1, 2], "ut4-l4": [1, 2],
+    "ut4-l5": [2], "ut4-l6": [3], "ut4-l7": [3], "ut4-l8": [4],
+    "ut4-l9": [5],
+  };
+  const dives = unit.deepDives || [];
+  const indexes = map[lessonId] || dives.map((_, index) => index);
+  return indexes.map((index) => dives[index]).filter(Boolean);
+}
+
+function renderSyllabus(unit, activeLessonId = "") {
+  return (unit.topics || []).map((topic) => {
+    const lessons = (topic.lessons || []).map((lesson) => {
+      const seen = progress.seenLessons.includes(lesson.id);
+      const active = activeLessonId === lesson.id;
+      return `
+        <button class="syllabus-link ${active ? "active" : ""}" data-action="open-topic-page" data-unit="${unit.id}" data-lesson="${lesson.id}">
+          <span>${lesson.title}</span>
+          ${seen ? `<small>Visto</small>` : `<small>Leer</small>`}
+        </button>
+      `;
+    }).join("");
+    return `
+      <details class="syllabus-group" open>
+        <summary>${topic.title}</summary>
+        <div class="syllabus-items">${lessons}</div>
+      </details>
+    `;
+  }).join("");
+}
+
 function setView(view) {
   state.view = view;
   document.querySelectorAll(".nav-btn").forEach((btn) => {
-    btn.classList.toggle("active", btn.dataset.view === view);
+    const activeView = view === "topicPage" ? "units" : view;
+    btn.classList.toggle("active", btn.dataset.view === activeView);
   });
   render();
 }
@@ -56,6 +109,7 @@ function titleForView(view) {
     practice: "Practica guiada",
     quiz: "Multiple opcion",
     exam: "Simulacro de examen",
+    topicPage: "Lectura por subtema",
     realExam: "Simulacros reales",
     sources: "Material fuente",
   }[view];
@@ -139,32 +193,10 @@ function renderUnits() {
     </button>
   `).join("");
   const unit = DATA.units.find((item) => item.id === state.selectedUnit);
-  const topicBlocks = unit.topics.map((topic) => {
-    const lessons = topic.lessons.map((lesson) => {
-      const seen = progress.seenLessons.includes(lesson.id);
-      return `
-        <section class="lesson">
-          <h4>${lesson.title}</h4>
-          <p>${lesson.body}</p>
-          <div class="feedback">${lesson.tutor}</div>
-          <button class="${seen ? "plain-btn" : "primary-btn"}" data-action="mark-lesson" data-lesson="${lesson.id}">
-            ${seen ? "Visto" : "Marcar como visto"}
-          </button>
-        </section>
-      `;
-    }).join("");
-    return `<section class="topic-block"><h3>${topic.title}</h3>${lessons}</section>`;
-  }).join("");
   const formulas = unit.formulas.length
     ? unit.formulas.map((formula) => `<div class="formula"><strong>${formula.label}:</strong> ${formula.value}</div>`).join("")
     : `<p>No hay formulas centrales en esta unidad; concentra el estudio en conceptos y diferencias.</p>`;
-  const deepDives = (unit.deepDives || []).map((section) => `
-    <section class="deep-dive">
-      <h3>${section.title}</h3>
-      ${section.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
-      ${section.examTip ? `<div class="exam-note">${section.examTip}</div>` : ""}
-    </section>
-  `).join("");
+  const firstLesson = unitLessons(unit).find((lesson) => !progress.seenLessons.includes(lesson.id)) || unitLessons(unit)[0];
 
   viewEl.innerHTML = `
     <div class="tabs">${tabs}</div>
@@ -182,10 +214,73 @@ function renderUnits() {
       </div>
     `)}
     <div class="grid two wide-left">
-      ${card(`<h3>Teoria por subtemas</h3>${topicBlocks}`)}
-      ${card(`<h3>Formulas y alertas</h3>${formulas}`)}
+      ${card(`
+        <div class="section-heading">
+          <div>
+            <h3>Temario clickeable</h3>
+            <p>Abri cada subtema como una pagina propia, con tutor y desarrollo profundo unificados.</p>
+          </div>
+          <button class="primary-btn" data-action="open-topic-page" data-unit="${unit.id}" data-lesson="${firstLesson.id}">Empezar</button>
+        </div>
+        ${renderSyllabus(unit)}
+      `)}
+      ${card(`
+        <h3>Formulas y alertas</h3>
+        ${formulas}
+        <div class="exam-note">Consejo: estudia una pagina de subtema, marcala como vista y recien despues pasa a practica o multiple opcion.</div>
+      `)}
     </div>
-    ${deepDives ? card(`<h3>Desarrollo teorico profundo</h3>${deepDives}`, "reading-card") : ""}
+  `;
+}
+
+function renderTopicPage() {
+  const { unit, topic, lesson } = findLessonContext();
+  state.selectedUnit = unit.id;
+  state.selectedLesson = lesson.id;
+  const seen = progress.seenLessons.includes(lesson.id);
+  const tabs = DATA.units.map((item) => `
+    <button class="tab ${unit.id === item.id ? "active" : ""}" data-action="select-unit" data-unit="${item.id}">
+      ${item.short}
+    </button>
+  `).join("");
+  const dives = relatedDeepDives(unit, lesson.id).map((section) => `
+    <section class="deep-dive">
+      <h3>${section.title}</h3>
+      ${section.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+      ${section.examTip ? `<div class="exam-note">${section.examTip}</div>` : ""}
+    </section>
+  `).join("");
+  const formulas = unit.formulas.length
+    ? unit.formulas.map((formula) => `<div class="formula"><strong>${formula.label}:</strong> ${formula.value}</div>`).join("")
+    : `<p>Este subtema es principalmente conceptual.</p>`;
+
+  viewEl.innerHTML = `
+    <div class="tabs">${tabs}</div>
+    <div class="topic-page-layout">
+      ${card(`
+        <button class="plain-btn back-btn" data-action="back-to-unit">Volver al temario</button>
+        <h3>Temario de ${unit.short}</h3>
+        ${renderSyllabus(unit, lesson.id)}
+      `, "syllabus-card")}
+      <article class="card reading-card topic-reading">
+        <div class="breadcrumb">${unit.short} / ${topic.title}</div>
+        <h3>${lesson.title}</h3>
+        <p class="lead-text">${lesson.body}</p>
+        <div class="feedback">${lesson.tutor}</div>
+        <div class="topic-actions">
+          <button class="${seen ? "plain-btn" : "primary-btn"}" data-action="mark-lesson" data-lesson="${lesson.id}">
+            ${seen ? "Visto" : "Marcar como visto"}
+          </button>
+          <button class="plain-btn" data-action="practice-unit" data-unit="${unit.id}">Practicar esta unidad</button>
+        </div>
+        <section class="formula-panel">
+          <h4>Formulas y recordatorios de la unidad</h4>
+          ${formulas}
+        </section>
+        <h3>Desarrollo teorico del subtema</h3>
+        ${dives || `<p>No hay desarrollo ampliado para este punto todavia.</p>`}
+      </article>
+    </div>
   `;
 }
 
@@ -410,6 +505,7 @@ function render() {
   renderProgress();
   if (state.view === "dashboard") renderDashboard();
   if (state.view === "units") renderUnits();
+  if (state.view === "topicPage") renderTopicPage();
   if (state.view === "practice") renderPractice();
   if (state.view === "quiz") renderQuiz();
   if (state.view === "exam") renderExam();
@@ -470,6 +566,14 @@ document.addEventListener("click", (event) => {
     state.selectedUnit = target.dataset.unit;
     setView("units");
   }
+  if (action === "open-topic-page") {
+    state.selectedUnit = target.dataset.unit;
+    state.selectedLesson = target.dataset.lesson;
+    setView("topicPage");
+  }
+  if (action === "back-to-unit") {
+    setView("units");
+  }
   if (action === "practice-unit") {
     const exercise = DATA.guidedExercises.find((item) => item.unit === target.dataset.unit) || DATA.guidedExercises[0];
     state.selectedExercise = exercise.id;
@@ -479,7 +583,8 @@ document.addEventListener("click", (event) => {
   if (action === "mark-lesson") {
     uniquePush(progress.seenLessons, target.dataset.lesson);
     saveProgress();
-    renderUnits();
+    if (state.view === "topicPage") renderTopicPage();
+    else renderUnits();
   }
   if (action === "select-exercise") {
     state.selectedExercise = target.dataset.exercise;
