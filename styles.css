@@ -489,6 +489,30 @@ button {
   margin: 10px 0 6px;
 }
 
+.reading-card {
+  max-width: 1120px;
+}
+
+.deep-dive {
+  border-top: 1px solid var(--line);
+  padding: 18px 0;
+}
+
+.deep-dive:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.deep-dive h3 {
+  color: var(--primary-dark);
+}
+
+.deep-dive p {
+  color: #344054;
+  font-size: 16px;
+  line-height: 1.72;
+}
+
 .source-list {
   display: grid;
   gap: 10px;

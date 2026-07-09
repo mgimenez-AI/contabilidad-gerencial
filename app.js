@@ -158,6 +158,13 @@ function renderUnits() {
   const formulas = unit.formulas.length
     ? unit.formulas.map((formula) => `<div class="formula"><strong>${formula.label}:</strong> ${formula.value}</div>`).join("")
     : `<p>No hay formulas centrales en esta unidad; concentra el estudio en conceptos y diferencias.</p>`;
+  const deepDives = (unit.deepDives || []).map((section) => `
+    <section class="deep-dive">
+      <h3>${section.title}</h3>
+      ${section.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+      ${section.examTip ? `<div class="exam-note">${section.examTip}</div>` : ""}
+    </section>
+  `).join("");
 
   viewEl.innerHTML = `
     <div class="tabs">${tabs}</div>
@@ -178,6 +185,7 @@ function renderUnits() {
       ${card(`<h3>Teoria por subtemas</h3>${topicBlocks}`)}
       ${card(`<h3>Formulas y alertas</h3>${formulas}`)}
     </div>
+    ${deepDives ? card(`<h3>Desarrollo teorico profundo</h3>${deepDives}`, "reading-card") : ""}
   `;
 }
 
