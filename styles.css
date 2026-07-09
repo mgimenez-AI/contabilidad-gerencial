@@ -28,7 +28,8 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
@@ -512,6 +513,93 @@ button {
   border: 1px solid var(--line);
   border-radius: 8px;
   padding: 11px 12px;
+}
+
+.sync-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.sync-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.sync-form input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 11px 12px;
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.sync-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 1px solid var(--line);
+}
+
+.sync-status {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 8px;
+  background: var(--soft-blue);
+  color: var(--primary-dark);
+}
+
+.sync-status.ok {
+  background: var(--soft-green);
+  color: #075e4a;
+}
+
+.sync-status.bad {
+  background: #fff1f0;
+  color: var(--danger);
+}
+
+.sync-meta {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 16px;
+}
+
+.sync-meta div {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.sync-meta dt {
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.sync-meta dd {
+  margin: 4px 0 0;
+  word-break: break-word;
+}
+
+.note-box {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  margin-top: 12px;
+  background: #fbfdff;
+}
+
+.note-box.soft {
+  background: var(--soft-warn);
+}
+
+.note-box p {
+  margin-bottom: 0;
 }
 
 .feedback {

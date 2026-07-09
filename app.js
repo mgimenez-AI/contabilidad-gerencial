@@ -1,5 +1,7 @@
 const DATA = window.CG_DATA;
 const STORAGE_KEY = "contabilidad-gerencial-progress-v2";
+const SYNC_KEY = "contabilidad-gerencial-sync-v1";
+const GIST_FILENAME = "contabilidad-gerencial-progreso.json";
 
 const state = {
   view: "dashboard",
@@ -19,6 +21,7 @@ const state = {
 };
 
 const progress = loadProgress();
+const syncState = loadSyncState();
 const viewEl = document.querySelector("#view");
 const viewTitle = document.querySelector("#viewTitle");
 
@@ -42,6 +45,67 @@ function loadProgress() {
 function saveProgress() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   renderProgress();
+}
+
+function loadSyncState() {
+  const fallback = {
+    token: "",
+    gistId: "",
+    lastSync: "",
+    status: "",
+  };
+  try {
+    return { ...fallback, ...(JSON.parse(localStorage.getItem(SYNC_KEY)) || {}) };
+  } catch {
+    return fallback;
+  }
+}
+
+function saveSyncState() {
+  localStorage.setItem(SYNC_KEY, JSON.stringify(syncState));
+}
+
+function normalizeProgress(value = {}) {
+  const fallback = loadProgress();
+  return {
+    seenLessons: Array.isArray(value.seenLessons) ? value.seenLessons : fallback.seenLessons,
+    completedExercises: Array.isArray(value.completedExercises) ? value.completedExercises : fallback.completedExercises,
+    quizCorrect: Number(value.quizCorrect) || 0,
+    quizTotal: Number(value.quizTotal) || 0,
+    examRuns: Array.isArray(value.examRuns) ? value.examRuns : [],
+    realExamRuns: Array.isArray(value.realExamRuns) ? value.realExamRuns : [],
+    questionAttempts: Array.isArray(value.questionAttempts) ? value.questionAttempts : [],
+  };
+}
+
+function uniqueBy(items, keyFn) {
+  const seen = new Set();
+  return items.filter((item) => {
+    const key = keyFn(item);
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
+function mergeProgress(local, remote) {
+  const safeRemote = normalizeProgress(remote);
+  return {
+    seenLessons: [...new Set([...(local.seenLessons || []), ...safeRemote.seenLessons])],
+    completedExercises: [...new Set([...(local.completedExercises || []), ...safeRemote.completedExercises])],
+    quizCorrect: Math.max(Number(local.quizCorrect) || 0, Number(safeRemote.quizCorrect) || 0),
+    quizTotal: Math.max(Number(local.quizTotal) || 0, Number(safeRemote.quizTotal) || 0),
+    examRuns: uniqueBy([...(local.examRuns || []), ...safeRemote.examRuns], (item) => `${item.date}-${item.score}`),
+    realExamRuns: uniqueBy([...(local.realExamRuns || []), ...safeRemote.realExamRuns], (item) => `${item.date}-${item.title}-${item.score}`),
+    questionAttempts: uniqueBy([...(local.questionAttempts || []), ...safeRemote.questionAttempts], (item) => `${item.date}-${item.id}-${item.source}`),
+  };
+}
+
+function syncStatus(message, type = "info") {
+  syncState.status = message;
+  syncState.statusType = type;
+  saveSyncState();
+  if (state.view === "sync") renderSync();
 }
 
 function uniquePush(list, item) {
@@ -122,6 +186,7 @@ function titleForView(view) {
     topicPage: "Lectura por subtema",
     realExam: "Simulacros reales",
     analytics: "Medicion de avance",
+    sync: "Sincronizacion",
     sources: "Material fuente",
   }[view];
 }
@@ -154,6 +219,15 @@ function renderProgress() {
 
 function card(content, extraClass = "") {
   return `<article class="card ${extraClass}">${content}</article>`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
 function unitLabel(unitId) {
@@ -706,6 +780,129 @@ function renderSources() {
   `;
 }
 
+function renderSync() {
+  const lastSync = syncState.lastSync
+    ? new Date(syncState.lastSync).toLocaleString("es-UY")
+    : "Todavia no sincronizaste.";
+  const tokenLabel = syncState.token ? "Token guardado en este navegador" : "Sin token guardado";
+  const gistLabel = syncState.gistId ? escapeHtml(syncState.gistId) : "Se creara automaticamente al subir por primera vez";
+  const statusClass = syncState.statusType ? ` ${syncState.statusType}` : "";
+
+  viewEl.innerHTML = `
+    <div class="grid two wide-left">
+      ${card(`
+        <div class="section-heading">
+          <div>
+            <h3>Guardar avance en GitHub</h3>
+            <p>Usa un Gist privado como archivo de progreso. Asi podes estudiar en PC y despues seguir desde el celular.</p>
+          </div>
+        </div>
+
+        <div class="sync-form">
+          <label>
+            Token de GitHub
+            <input id="githubTokenInput" type="password" autocomplete="off" placeholder="Pega aca tu token con permiso gist" value="${escapeHtml(syncState.token)}" />
+          </label>
+          <label>
+            Gist ID opcional
+            <input id="gistIdInput" autocomplete="off" placeholder="Solo si ya tenes uno creado" value="${escapeHtml(syncState.gistId)}" />
+          </label>
+          <div class="topic-actions">
+            <button class="primary-btn" data-action="save-sync-settings">Guardar conexion</button>
+            <button class="plain-btn" data-action="clear-sync-settings">Quitar token de este navegador</button>
+          </div>
+        </div>
+
+        <div class="sync-actions">
+          <button class="primary-btn" data-action="upload-progress">Subir progreso a GitHub</button>
+          <button class="plain-btn" data-action="download-progress">Bajar progreso desde GitHub</button>
+        </div>
+
+        ${syncState.status ? `<div class="sync-status${statusClass}">${escapeHtml(syncState.status)}</div>` : ""}
+      `)}
+
+      ${card(`
+        <h3>Estado</h3>
+        <dl class="sync-meta">
+          <div><dt>Conexion</dt><dd>${tokenLabel}</dd></div>
+          <div><dt>Gist</dt><dd>${gistLabel}</dd></div>
+          <div><dt>Ultima sincronizacion</dt><dd>${lastSync}</dd></div>
+        </dl>
+        <div class="note-box">
+          <strong>Como usarlo en el celular</strong>
+          <p>Abri la app, entra en Sincronizacion, pega el mismo token, guarda la conexion y toca "Bajar progreso desde GitHub".</p>
+        </div>
+        <div class="note-box soft">
+          <strong>Permiso necesario</strong>
+          <p>Al crear el token en GitHub, alcanza con darle permiso de <b>gist</b>. No lo pegues en chats ni lo subas al repositorio.</p>
+        </div>
+      `)}
+    </div>
+  `;
+}
+
+function progressPayload() {
+  return JSON.stringify({
+    app: "contabilidad-gerencial",
+    version: 1,
+    updatedAt: new Date().toISOString(),
+    progress,
+  }, null, 2);
+}
+
+async function gistRequest(path, options = {}) {
+  if (!syncState.token) throw new Error("Primero guarda un token de GitHub.");
+  const response = await fetch(`https://api.github.com${path}`, {
+    ...options,
+    headers: {
+      Accept: "application/vnd.github+json",
+      Authorization: `Bearer ${syncState.token}`,
+      "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28",
+      ...(options.headers || {}),
+    },
+  });
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`GitHub respondio ${response.status}. ${text}`);
+  }
+  return response.json();
+}
+
+async function uploadProgressToGist() {
+  syncStatus("Subiendo tu progreso a GitHub...", "info");
+  const body = {
+    description: "Progreso Contabilidad Gerencial",
+    public: false,
+    files: {
+      [GIST_FILENAME]: {
+        content: progressPayload(),
+      },
+    },
+  };
+  const gist = syncState.gistId
+    ? await gistRequest(`/gists/${syncState.gistId}`, { method: "PATCH", body: JSON.stringify(body) })
+    : await gistRequest("/gists", { method: "POST", body: JSON.stringify(body) });
+  syncState.gistId = gist.id;
+  syncState.lastSync = new Date().toISOString();
+  syncStatus("Progreso subido correctamente. Ya podes bajarlo desde otro dispositivo.", "ok");
+}
+
+async function downloadProgressFromGist() {
+  if (!syncState.gistId) throw new Error("Falta el Gist ID. Subi el progreso una vez o pega el ID del Gist.");
+  syncStatus("Bajando progreso desde GitHub...", "info");
+  const gist = await gistRequest(`/gists/${syncState.gistId}`);
+  const file = gist.files && gist.files[GIST_FILENAME];
+  if (!file || !file.content) throw new Error("No encontre el archivo de progreso dentro del Gist.");
+  const payload = JSON.parse(file.content);
+  const merged = mergeProgress(progress, payload.progress || payload);
+  Object.assign(progress, merged);
+  saveProgress();
+  syncState.lastSync = new Date().toISOString();
+  syncStatus("Progreso bajado y fusionado con este dispositivo.", "ok");
+  render();
+}
+
 function render() {
   viewTitle.textContent = titleForView(state.view);
   document.querySelector("#daysLeft").textContent = daysToExam();
@@ -718,6 +915,7 @@ function render() {
   if (state.view === "exam") renderExam();
   if (state.view === "realExam") renderRealExam();
   if (state.view === "analytics") renderAnalytics();
+  if (state.view === "sync") renderSync();
   if (state.view === "sources") renderSources();
 }
 
@@ -857,6 +1055,24 @@ document.addEventListener("click", (event) => {
     state.realExamAnswers = {};
     state.realExamFinished = false;
     renderRealExam();
+  }
+  if (action === "save-sync-settings") {
+    syncState.token = document.querySelector("#githubTokenInput").value.trim();
+    syncState.gistId = document.querySelector("#gistIdInput").value.trim();
+    syncStatus(syncState.token ? "Conexion guardada en este navegador." : "Guarda un token para poder sincronizar.", syncState.token ? "ok" : "bad");
+  }
+  if (action === "clear-sync-settings") {
+    if (!confirm("Quitar token y Gist ID guardados en este navegador?")) return;
+    syncState.token = "";
+    syncState.gistId = "";
+    syncState.lastSync = "";
+    syncStatus("Conexion quitada de este navegador.", "info");
+  }
+  if (action === "upload-progress") {
+    uploadProgressToGist().catch((error) => syncStatus(error.message, "bad"));
+  }
+  if (action === "download-progress") {
+    downloadProgressFromGist().catch((error) => syncStatus(error.message, "bad"));
   }
 });
 
