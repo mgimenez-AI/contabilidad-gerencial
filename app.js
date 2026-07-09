@@ -165,10 +165,33 @@ function recordQuestionAttempt(question, selected, source) {
     id: question.id,
     unit: question.unit,
     prompt: question.prompt,
-    correct: selected === question.answer,
+    correct: isQuestionCorrect(question, selected),
     source,
     date: new Date().toISOString(),
   });
+}
+
+function parseAnswerNumber(value) {
+  if (value === undefined || value === null || value === "") return NaN;
+  const raw = String(value).trim().replace(/\s/g, "");
+  const normalized = raw.includes(",")
+    ? raw.replace(/\./g, "").replace(",", ".")
+    : raw;
+  return Number(normalized);
+}
+
+function isQuestionCorrect(question, selected) {
+  if (question.type === "numeric") {
+    const value = parseAnswerNumber(selected);
+    const tolerance = question.tolerance ?? 0.01;
+    return Number.isFinite(value) && Math.abs(value - question.answer) <= tolerance;
+  }
+  return Number(selected) === question.answer;
+}
+
+function formatCorrectAnswer(question) {
+  if (question.type === "numeric") return String(question.answer).replace(".", ",");
+  return question.options[question.answer];
 }
 
 function unitPerformance() {
@@ -601,14 +624,16 @@ function renderRealExam() {
   const answered = Object.keys(state.realExamAnswers).length;
 
   if (state.realExamFinished) {
-    const correct = exam.questions.filter((question) => state.realExamAnswers[question.id] === question.answer).length;
+    const correct = exam.questions.filter((question) => isQuestionCorrect(question, state.realExamAnswers[question.id])).length;
     const score = Math.round((correct / exam.questions.length) * 100);
     const review = exam.questions.map((question, index) => {
       const selected = state.realExamAnswers[question.id];
+      const ok = isQuestionCorrect(question, selected);
       return `
-        <div class="step ${selected === question.answer ? "active" : ""}">
-          <strong>${index + 1}. ${selected === question.answer ? "Correcta" : "Para repasar"} - ${unitLabel(question.unit)}</strong>
+        <div class="step ${ok ? "active" : ""}">
+          <strong>${index + 1}. ${ok ? "Correcta" : "Para repasar"} - ${unitLabel(question.unit)}</strong>
           <p>${question.prompt}</p>
+          <p><strong>Respuesta correcta:</strong> ${formatCorrectAnswer(question)}</p>
           <p>${question.explanation}</p>
         </div>
       `;
@@ -626,16 +651,24 @@ function renderRealExam() {
   }
 
   const questions = exam.questions.map((question, index) => {
-    const options = question.options.map((option, optionIndex) => `
-      <button class="option ${state.realExamAnswers[question.id] === optionIndex ? "selected" : ""}" data-action="answer-real-exam" data-question="${question.id}" data-answer="${optionIndex}">
-        ${option}
-      </button>
-    `).join("");
+    const answerControl = question.type === "numeric"
+      ? `
+        <div class="numeric-answer">
+          <input data-real-number="${question.id}" inputmode="decimal" placeholder="Escribi tu respuesta numerica" value="${state.realExamAnswers[question.id] || ""}" />
+          <small>Usa coma o punto decimal. No hace falta escribir $ ni %.</small>
+        </div>
+      `
+      : `<div class="option-list">${question.options.map((option, optionIndex) => `
+          <button class="option ${state.realExamAnswers[question.id] === optionIndex ? "selected" : ""}" data-action="answer-real-exam" data-question="${question.id}" data-answer="${optionIndex}">
+            ${option}
+          </button>
+        `).join("")}</div>`;
     return `
       <section class="lesson">
         <span class="pill">${unitLabel(question.unit)}</span>
         <h4>${index + 1}. ${question.prompt}</h4>
-        <div class="option-list">${options}</div>
+        ${question.context ? `<div class="case-context">${question.context}</div>` : ""}
+        ${answerControl}
       </section>
     `;
   }).join("");
@@ -647,7 +680,7 @@ function renderRealExam() {
       <p>${exam.meta}</p>
       <div class="quiz-footer sticky-exam">
         <span class="pill">${answered}/${exam.questions.length} respondidas</span>
-        <button class="primary-btn" data-action="finish-real-exam" ${answered < exam.questions.length ? "disabled" : ""}>Finalizar y corregir</button>
+        <button class="primary-btn" data-action="finish-real-exam">Finalizar y corregir</button>
       </div>
       ${questions}
     `)}
@@ -732,7 +765,7 @@ function finishExam() {
 function finishRealExam() {
   const exams = DATA.realExamSets || [];
   const exam = exams.find((item) => item.id === state.selectedRealExam) || exams[0];
-  const correct = exam.questions.filter((question) => state.realExamAnswers[question.id] === question.answer).length;
+  const correct = exam.questions.filter((question) => isQuestionCorrect(question, state.realExamAnswers[question.id])).length;
   const score = Math.round((correct / exam.questions.length) * 100);
   progress.realExamRuns.push({ date: new Date().toISOString(), title: exam.title, score });
   exam.questions.forEach((question) => recordQuestionAttempt(question, state.realExamAnswers[question.id], exam.title));
@@ -832,6 +865,12 @@ document.addEventListener("change", (event) => {
     state.quizUnit = event.target.value;
     state.quizIndex = 0;
     renderQuiz();
+  }
+});
+
+document.addEventListener("input", (event) => {
+  if (event.target.dataset.realNumber) {
+    state.realExamAnswers[event.target.dataset.realNumber] = event.target.value;
   }
 });
 

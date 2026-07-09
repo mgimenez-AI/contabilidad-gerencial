@@ -683,6 +683,35 @@ button {
   cursor: default;
 }
 
+.numeric-answer {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.numeric-answer input {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 12px;
+  font: inherit;
+}
+
+.numeric-answer small {
+  color: var(--muted);
+}
+
+.case-context {
+  white-space: pre-line;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fbfdff;
+  padding: 12px;
+  color: #344054;
+  line-height: 1.55;
+  margin: 10px 0;
+}
+
 .reading-card {
   max-width: 1120px;
 }

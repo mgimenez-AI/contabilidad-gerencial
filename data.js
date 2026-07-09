@@ -716,18 +716,124 @@ window.CG_DATA = {
     {
       id: "agosto-2022",
       title: "Examen Agosto 2022",
-      meta: "Examen real con casos practicos y teoria. Version interactiva para resolver en la app.",
+      meta: "Examen real reconstruido desde el PDF. Incluye casos numericos, obligatorias y preguntas teoricas. Las respuestas numericas aceptan coma o punto decimal.",
       questions: [
-        { id: "ag22-1", unit: "ut23", prompt: "El Ajuste SRL vendia 40.000 unidades a $100, con costo variable $80 y CF $50.000. Si el CV sube a $95 y quiere mantener la utilidad absoluta, cual debe ser el nuevo precio?", options: ["110", "115", "120", "125"], answer: 1, explanation: "Utilidad inicial: 40.000 x (100-80) - 50.000 = 750.000. Con CV 95: precio = 95 + (750.000+50.000)/40.000 = 115." },
-        { id: "ag22-2", unit: "ut3", prompt: "Jonthan Harris SA produce 100 tanques, CVu $10, costo completo $12, vende 72 a $20. Cual es la utilidad por costeo variable?", options: ["520", "560", "576", "720"], answer: 0, explanation: "Ventas 1.440 - CV vendido 720 - CF produccion 200 = 520." },
-        { id: "ag22-3", unit: "ut3", prompt: "Con los mismos datos de Jonthan Harris SA, cual es la utilidad por costeo completo?", options: ["520", "544", "576", "600"], answer: 2, explanation: "Ventas 1.440 - costo completo vendido 72 x 12 = 576." },
-        { id: "ag22-4", unit: "ut23", prompt: "La Inflacionaria SA tiene CV de fabricacion $152 y comision de vendedores del 10% del precio. Que precio permite una razon de contribucion del 40%?", options: ["253,33", "304", "380", "400"], answer: 1, explanation: "Contribucion = P - 152 - 0,10P = 0,90P - 152. Si RC=40%, 0,90P - 152 = 0,40P; P=304." },
-        { id: "ag22-5", unit: "ut23", prompt: "Mascotas SRL evalua una alternativa con CF adicionales $17.250, precio exportacion $300 y comision 10%. Si el margen local era $55, desde que volumen aproximado conviene exportar?", options: ["50", "80", "127", "300"], answer: 1, explanation: "La mejora de contribucion por unidad es 270 - 55 = 215. El punto de indiferencia es 17.250 / 215 = 80,23 unidades." },
-        { id: "ag22-6", unit: "ut4", prompt: "En un presupuesto integrado, que estado recoge principalmente las cobranzas?", options: ["Estado de Resultados", "Flujo de Caja", "Estado de Situacion Patrimonial", "Cuadro de costos fijos"], answer: 1, explanation: "Las cobranzas son movimientos de fondos, por lo tanto van al flujo de caja." },
-        { id: "ag22-7", unit: "ut23", prompt: "Si se comercializa un solo producto, la utilidad puede calcularse como:", options: ["Unidades vendidas x costo fijo unitario", "(Ventas en unidades - punto de equilibrio en unidades) x margen de contribucion unitario", "Ventas x costo variable unitario", "Punto de equilibrio x precio"], answer: 1, explanation: "Por encima del equilibrio, cada unidad adicional aporta su margen de contribucion a utilidad." },
-        { id: "ag22-8", unit: "ut23", prompt: "Con capacidad ociosa, vender productos con contribucion marginal positiva:", options: ["Aumenta el resultado aunque no cubra costo completo", "Disminuye el resultado si no cubre costo completo", "No modifica el resultado", "Solo sirve si cubre todos los fijos asignados"], answer: 0, explanation: "Si no aparecen costos fijos incrementales, la contribucion positiva mejora el resultado." },
-        { id: "ag22-9", unit: "ut4", prompt: "En compras presupuestadas, si se quiere aumentar el stock final deseado, las compras necesarias:", options: ["Bajan", "Suben", "No cambian", "Se vuelven cero"], answer: 1, explanation: "Compras = consumo o ventas previstas + stock final deseado - stock inicial." },
-        { id: "ag22-10", unit: "ut1", prompt: "La razon principal para usar informacion gerencial y no solo contabilidad financiera en estos casos es que:", options: ["La gerencial permite adaptar el modelo a la decision", "La financiera siempre es falsa", "La gerencial no usa numeros", "La financiera solo sirve para impuestos"], answer: 0, explanation: "La gerencial se adapta al objetivo: decidir, controlar y proyectar." }
+        {
+          id: "ag22-1",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Caso 1 - El Ajuste SRL: determine el precio de venta de setiembre para mantener la misma utilidad absoluta de agosto.",
+          context: "Agosto: 40.000 unidades vendidas, precio $100, costo de adquisicion $80 por unidad y costos fijos $50.000.\nSetiembre: costo de adquisicion $95, mismas unidades y mismos costos fijos.",
+          answer: 115,
+          tolerance: 0.01,
+          explanation: "Utilidad agosto = 40.000 x (100 - 80) - 50.000 = 750.000. Para setiembre: 40.000 x (P - 95) - 50.000 = 750.000. Entonces P = 115."
+        },
+        {
+          id: "ag22-2",
+          unit: "ut3",
+          type: "numeric",
+          prompt: "Caso 2 - Jonhattan Harris SA: determine el resultado 2021 por costeo variable.",
+          context: "Se fabricaron 100 tanques. Costo variable unitario $10. Costo completo unitario $12. Se vendieron 72 tanques a $20. No existen otros costos ni inventarios iniciales.",
+          answer: 520,
+          tolerance: 0.01,
+          explanation: "La diferencia entre costo completo y variable es $2 por tanque, por lo que los costos fijos de produccion son 100 x 2 = 200. Resultado variable = 72 x 20 - 72 x 10 - 200 = 520."
+        },
+        {
+          id: "ag22-3",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Caso 3 - La Inflacionaria SA: determine el precio de venta para que la razon de contribucion sea 40%.",
+          context: "Costo variable unitario de fabricacion: $152. Comisiones de vendedores: 10% del precio de venta.",
+          answer: 304,
+          tolerance: 0.01,
+          explanation: "Contribucion = P - 152 - 0,10P = 0,90P - 152. Si la razon de contribucion es 40%, entonces 0,90P - 152 = 0,40P. Resultado: P = 304."
+        },
+        {
+          id: "ag22-4",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Caso 4 - Mascotas SRL: determine el nivel de actividad mensual de la sucursal Malvin a partir del cual conviene abrir el local.",
+          context: "Local actual: precio $120, costo variable $65, costos fijos mensuales $300.000 y capacidad plena.\nSucursal Malvin: costos fijos adicionales $17.250, precio $300, comision variable 10% del precio.",
+          answer: 80.23,
+          tolerance: 0.05,
+          explanation: "Contribucion local sacrificada = 120 - 65 = 55. Contribucion Malvin = 300 - 30 = 270. Mejora por unidad = 215. Punto de indiferencia = 17.250 / 215 = 80,23 unidades. Si pide unidades enteras 'a partir', conviene desde 81."
+        },
+        {
+          id: "ag22-5",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Caso 5 (obligatoria) - Dos Partes: determine cuantos kilos de yerba se deben vender en 2023 para que el RAII sea cero.",
+          context: "Ventas proyectadas originalmente: 20.000 kg a $19. Compras: 90.000 kg a $15. Existencia inicial: 5.000 kg a $14. FIFO.\nCostos fijos del ER: salarios $1.190, GAV $30.000 y amortizaciones $5.000. Se pide RAII = 0.",
+          answer: 7797.5,
+          tolerance: 0.1,
+          explanation: "Para Q mayor a 5.000, costo de ventas FIFO = 5.000 x 14 + (Q - 5.000) x 15 = 15Q - 5.000. Ventas = 19Q. Resultado bruto = 4Q + 5.000. RAII = 4Q + 5.000 - 36.190 = 0. Q = 7.797,5 kg."
+        },
+        {
+          id: "ag22-6",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Caso 6 (obligatoria) - Cerveceria SRL: calcule el punto de equilibrio financiero mensual en unidades monetarias.",
+          context: "Precio por litro $7,70. Materias primas $3,08 por litro. Sueldos, cargas, alquiler y depreciaciones equivalen a $3 por litro para 300 litros. Depreciacion mensual no pagada: $54.",
+          answer: 1410,
+          tolerance: 0.1,
+          explanation: "Costos fijos totales segun estructura: 300 x 3 = 900. Como la depreciacion de 54 no se paga, CF financieros = 846. Razon de contribucion = (7,70 - 3,08) / 7,70 = 0,60. Equilibrio financiero en ventas = 846 / 0,60 = 1.410."
+        },
+        {
+          id: "ag22-7",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Caso 7 - Automotora SA: para maximizar la contribucion marginal total, determine la cantidad a comprar y vender del producto A.",
+          context: "Producto A: precio $120, costo variable $80, contribucion marginal $40. Demanda 8.000 unidades.\nProducto B: precio $160, costo variable $100, contribucion marginal $60. Demanda 5.000 unidades.\nRestriccion financiera para comprar mercaderia: $875.840.",
+          answer: 4698,
+          tolerance: 0.5,
+          explanation: "Se prioriza contribucion por peso invertido: A = 40/80 = 0,50; B = 60/100 = 0,60. Se compra toda la demanda de B: 5.000 x 100 = 500.000. Saldo: 375.840. A comprar = 375.840 / 80 = 4.698 unidades."
+        },
+        {
+          id: "ag22-8",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Caso 8 - Bienes de uso: calcule el valor neto de los bienes de uso al cierre del periodo presupuestado 01/08 al 31/01.",
+          context: "Al inicio: vehiculos $420.000, equipos informaticos $750.000, mejoras sobre local alquilado $2.000.000 y terreno $1.800.000.\nVida util 10 años; al inicio transcurrio la mitad de la vida util. El 15/12 se vende el terreno en $252.000 y se compra inmediatamente equipos informaticos por ese importe. Las depreciaciones se computan desde el mes siguiente al alta.",
+          answer: 1676400,
+          tolerance: 1,
+          explanation: "Bienes depreciables iniciales: 3.170.000. Amortizacion acumulada inicial por mitad de vida: 1.585.000. Depreciacion del semestre: 158.500. Nuevo equipo: 252.000, deprecia enero: 2.100. Valor bruto final = 3.170.000 + 252.000 = 3.422.000. Amortizacion acumulada final = 1.745.600. Neto = 1.676.400."
+        },
+        {
+          id: "ag22-9",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Caso 9 (obligatoria) - Empresa comercial: determine el capital de trabajo al 30/06/Año 2.",
+          context: "Disponibilidades al cierre: $20.000. Proveedores al cierre: $9.324. Deudas bancarias a corto plazo: $34.000.\nStock inicial: 44.000 unidades a $13. Compras: 8.280 unidades a $11. Ventas: 47.450 unidades. FIFO.",
+          answer: 29806,
+          tolerance: 1,
+          explanation: "Stock final = 44.000 + 8.280 - 47.450 = 4.830 unidades, todas de la compra a $11 = 53.130. Capital de trabajo = disponibilidades + stock - proveedores - deuda bancaria CP = 20.000 + 53.130 - 9.324 - 34.000 = 29.806."
+        },
+        {
+          id: "ag22-10",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Caso 10 - Empresa comercial: calcule el ciclo de conversion de cuentas a pagar en dias para el año 2.",
+          context: "Proveedores promedio Año 2: $37.444. Compras del Año 2: 8.280 unidades a $11. Compras 100% a credito. Año comercial de 360 dias.",
+          answer: 148,
+          tolerance: 0.5,
+          explanation: "Compras a credito del año = 8.280 x 11 = 91.080. Compras diarias = 91.080 / 360 = 253. Ciclo de cuentas a pagar = 37.444 / 253 = 148 dias."
+        },
+        {
+          id: "ag22-11",
+          unit: "ut23",
+          prompt: "Pregunta teorica: cuando se comercializa un solo producto, la diferencia entre ventas en unidades y punto de equilibrio en unidades, multiplicada por la contribucion marginal unitaria, da la utilidad. Si ademas se restan los costos fijos, tambien da la utilidad.",
+          options: ["Las dos afirmaciones son correctas", "La afirmacion 1 es correcta y la 2, incorrecta", "La afirmacion 2 es correcta y la 1, incorrecta", "Las dos afirmaciones son incorrectas"],
+          answer: 1,
+          explanation: "La afirmacion 1 es correcta: las unidades por encima del equilibrio generan utilidad por su margen. La 2 resta costos fijos por segunda vez."
+        },
+        {
+          id: "ag22-12",
+          unit: "ut23",
+          prompt: "Pregunta teorica: con capacidad ociosa, vender productos con contribucion marginal positiva incrementa el resultado aunque no cubra costo completo. En multiproducto, el equilibrio en unidades monetarias se determina usando la razon de contribucion promedio ponderada.",
+          options: ["Las dos afirmaciones son correctas", "La afirmacion 1 es correcta y la 2, incorrecta", "La afirmacion 2 es correcta y la 1, incorrecta", "Las dos afirmaciones son incorrectas"],
+          answer: 0,
+          explanation: "Ambas afirmaciones son correctas dentro de los supuestos del analisis marginal."
+        }
       ]
     },
     {
