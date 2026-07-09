@@ -839,24 +839,160 @@ window.CG_DATA = {
     {
       id: "julio-2023",
       title: "Examen Julio 2023",
-      meta: "Formato Moodle: 16 preguntas. Esta version transforma las respuestas numericas en multiple opcion para entrenar sin papel.",
+      meta: "Examen real reconstruido desde Moodle/PDF: 12 preguntas practicas numericas y 4 teoricas de multiple opcion. Obligatorias: 2, 6 y 8.",
       questions: [
-        { id: "jul23-1", unit: "ut3", prompt: "Caso 1: diferencia de utilidad entre costeo variable y completo. Resultado correcto segun examen:", options: ["244,100", "144,200", "344,100", "24,410"], answer: 0, explanation: "El examen informa como respuesta correcta 244,100. Repasa UT3 si fallaste." },
-        { id: "jul23-2", unit: "ut4", prompt: "Caso 2: presupuesto integrado de La Cerealera SA. Importe correcto solicitado:", options: ["6.546", "65.460", "654,6", "6.456"], answer: 0, explanation: "Respuesta correcta extraida del examen: 6.546." },
-        { id: "jul23-3", unit: "ut4", prompt: "Caso 3: presupuesto de La Citrica para enero-marzo. Resultado correcto:", options: ["26.220", "2.622", "22.620", "262.200"], answer: 0, explanation: "Respuesta correcta extraida del examen: 26.220." },
-        { id: "jul23-4", unit: "ut23", prompt: "Caso 4: empresa con tres productos A, B y C. Resultado correcto:", options: ["998,750", "899,750", "99,875", "1.098,750"], answer: 0, explanation: "Respuesta correcta extraida del examen: 998,750." },
-        { id: "jul23-5", unit: "ut23", prompt: "Caso 5: firma que vende computadoras con CVu $100, ventas mensuales $450.000 y CF $129.000. Resultado correcto:", options: ["960", "690", "1.290", "450"], answer: 0, explanation: "Respuesta correcta extraida del examen: 960." },
-        { id: "jul23-6", unit: "ut4", prompt: "Caso 6: ciclo de cuentas a cobrar. Resultado correcto:", options: ["36", "30", "69", "120"], answer: 0, explanation: "Respuesta correcta extraida del examen: 36." },
-        { id: "jul23-7", unit: "ut4", prompt: "Caso 7: deuda financiera por prestamo para maquinaria. Resultado correcto:", options: ["250.750", "205.750", "275.000", "150.750"], answer: 0, explanation: "Respuesta correcta extraida del examen: 250.750." },
-        { id: "jul23-8", unit: "ut4", prompt: "Caso 8: saldos de bienes de uso. Resultado correcto:", options: ["491.400", "419.400", "780.000", "288.600"], answer: 0, explanation: "Respuesta correcta extraida del examen: 491.400." },
-        { id: "jul23-9", unit: "ut4", prompt: "Caso 9: variaciones en estado de situacion patrimonial. Resultado correcto:", options: ["105.600", "150.600", "224.600", "377.400"], answer: 0, explanation: "Respuesta correcta extraida del examen: 105.600." },
-        { id: "jul23-10", unit: "ut4", prompt: "Caso 10: ventas presupuestadas por trimestres. Resultado correcto:", options: ["669.800", "696.800", "609.800", "838.000"], answer: 0, explanation: "Respuesta correcta extraida del examen: 669.800." },
-        { id: "jul23-11", unit: "ut4", prompt: "Caso 11: desvio en estado de resultados. Resultado correcto:", options: ["-190", "190", "-6.000", "69"], answer: 0, explanation: "Respuesta correcta extraida del examen: -190." },
-        { id: "jul23-12", unit: "ut4", prompt: "Caso 12: centros de responsabilidad y precio de transferencia. Resultado correcto:", options: ["14.600", "16.400", "12.500", "25.000"], answer: 0, explanation: "Respuesta correcta extraida del examen: 14.600." },
-        { id: "jul23-13", unit: "ut23", prompt: "Teorica: vender con contribucion marginal positiva pero sin cubrir costo completo produce disminucion del resultado.", options: ["Correcto", "Incorrecto", "Depende del IVA", "Solo si no hay costos variables"], answer: 1, explanation: "Es incorrecto si hay capacidad ociosa y no aparecen fijos incrementales." },
-        { id: "jul23-14", unit: "ut23", prompt: "Teorica: en un solo producto, utilidad = unidades sobre equilibrio x contribucion marginal unitaria.", options: ["Correcto", "Incorrecto", "Solo en multiproducto", "Solo con inventarios"], answer: 0, explanation: "Es una relacion basica del analisis CVU para un producto." },
-        { id: "jul23-15", unit: "ut1", prompt: "Teorica: los centros de inversion suelen ubicarse en niveles inferiores de la organizacion.", options: ["Correcto", "Incorrecto", "Siempre", "No aplica"], answer: 1, explanation: "Los centros de inversion suelen asociarse a niveles con mayor autonomia y responsabilidad." },
-        { id: "jul23-16", unit: "ut4", prompt: "Teorica: los desvios en el Estado de Situacion Patrimonial se relacionan con inversion y financiamiento.", options: ["Solo la primera afirmacion es correcta", "Las dos afirmaciones son correctas", "Ninguna es correcta", "Solo la segunda es correcta"], answer: 0, explanation: "El examen marcaba correcta la idea sobre ESP; la afirmacion sobre ciclo de cobranzas no era correcta." }
+        {
+          id: "jul23-1",
+          unit: "ut3",
+          type: "numeric",
+          prompt: "Caso 1: calcule el costo variable unitario de la produccion del ejercicio 2022.",
+          context: "Informacion del ejercicio 2022:\nInventario inicial PT: 10.000 unidades. Costeo variable $170 c/u; costeo completo $240 c/u.\nInventario inicial PP: variable $850.000; completo $1.000.000.\nProduccion del ejercicio: 110.000 unidades. Costeo variable $X c/u; completo $275 c/u.\nInventario final PP: variable $300.000; completo $570.000.\nSe vendieron 100.000 unidades. FIFO. Diferencia de utilidades: $38.000.",
+          answer: 244.1,
+          tolerance: 0.001,
+          explanation: "Respuesta correcta del examen: 244,100. Es un caso de diferencia de utilidades por costos fijos activados en inventarios."
+        },
+        {
+          id: "jul23-2",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Caso 2 (obligatoria) - La Cerealera SA: determine el punto de equilibrio en unidades para 2024 en base al RAII.",
+          context: "Ventas: 20.000 kg a $20. Compras: 90.000 kg a $15. Existencia inicial: 5.000 kg a $14. FIFO. Exento de IVA. Costos fijos: salarios $2.730, GAV $30.000, amortizaciones $5.000. Intereses no integran RAII.",
+          answer: 6546,
+          tolerance: 0.01,
+          explanation: "Para Q mayor a 5.000, margen unitario despues de FIFO normalizado queda $5,5 aproximadamente. RAII cero exige cubrir $37.730. Respuesta Moodle: 6.546 unidades."
+        },
+        {
+          id: "jul23-3",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Caso 3 - La Citrica: determine el nivel de actividad necesario para lograr utilidad de $100.000 antes de impuestos e intereses.",
+          context: "Ventas: precio $20 por kg. Compras disponibles a $15. Existencia inicial: 5.000 kg a $14. Costos fijos: salarios $1.100, GAV $30.000, amortizaciones $5.000. Capacidad practica maxima: 50.000 kg.",
+          answer: 26220,
+          tolerance: 0.01,
+          explanation: "Se busca RAII objetivo de $100.000. Respuesta correcta del examen: 26.220 kg."
+        },
+        {
+          id: "jul23-4",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Caso 4: determine el costo variable unitario de fabrica del producto B.",
+          context: "Producto A: ventas 250 unidades, precio $1.600, CV fabrica $840, CF directos $40.000.\nProducto B: ventas 400 unidades, precio $750, CV fabrica $X, CF directos $45.000.\nProducto C: ventas 450 unidades, precio $1.100, CV fabrica $600, CF directos $57.000.\nCosto variable comercial: 10% sobre ventas para todos. CF indirectos: $38.000. Margen de operacion proyectado: $54.000.",
+          answer: 998.75,
+          tolerance: 0.001,
+          explanation: "Al despejar el costo variable de B para que el margen de operacion total sea $54.000, se obtiene $998,750."
+        },
+        {
+          id: "jul23-5",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Caso 5: determine la cantidad mensual de computadoras que vende actualmente la firma.",
+          context: "La firma compra y vende computadoras. Costo variable unitario $100. Ventas mensuales $450.000. Costos fijos mensuales $129.000. Obtiene una utilidad del 100% sobre costos totales.",
+          answer: 960,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: 960 unidades."
+        },
+        {
+          id: "jul23-6",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Caso 6 (obligatoria): calcule el ciclo de conversion de creditos por ventas en dias.",
+          context: "Creditos por ventas iniciales: $1.080.000. Creditos por ventas finales: $129.600. Costo de ventas anual: $5.920.000. Ventas anuales sin IVA: $6.300.000. IVA 20%. Ventas: 20% contado y 80% credito. Año comercial de 360 dias.",
+          answer: 36,
+          tolerance: 0.01,
+          explanation: "Se trabaja con ventas a credito y saldo promedio de creditos. Respuesta correcta: 36 dias."
+        },
+        {
+          id: "jul23-7",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Caso 7: calcule los intereses devengados al 30/06/año 2.",
+          context: "Prestamo contratado el 01/04/año 1 para maquinaria. Capital $1.700.000. Interes 5,9% semestral lineal sobre saldos. 10 cuotas de amortizacion constante semestrales, primera el 30/09/año 1. Al 30/06/año 2 solo se abonaron intereses, no capital.",
+          answer: 250750,
+          tolerance: 0.01,
+          explanation: "Como no se amortizo capital, se devengan intereses sobre el capital completo segun el plazo acumulado. Respuesta correcta: 250.750."
+        },
+        {
+          id: "jul23-8",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Caso 8 (obligatoria): calcule el valor neto de bienes de uso al cierre del año 2.",
+          context: "Saldos al cierre del año 1: valor bruto $780.000; amortizacion acumulada $312.000. Vida util bienes actuales: 10 años. Deprecian desde el mes siguiente al alta. En el cuarto mes del año 2 se incorpora una maquinaria de vida util 5 años por $117.000. No hay bajas ni otras incorporaciones.",
+          answer: 491400,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: 491.400."
+        },
+        {
+          id: "jul23-9",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Caso 9: determine la variacion de disponibilidades al 30/06 segun la metodologia del curso.",
+          context: "Pasivos financieros finales presupuestados: $377.400. Capital de trabajo presupuestado: $90.000; real: $129.000. Sin variacion entre bienes de uso netos presupuestados y reales. Patrimonio total presupuestado $150.000; real $210.000. Prestamo bancario 01/02 por $792.000, 12 cuotas mensuales de amortizacion constante, tasa 2% mensual, cumplido.",
+          answer: 105600,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: 105.600."
+        },
+        {
+          id: "jul23-10",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Caso 10: determine el saldo de deudores por ventas presupuestado al cierre del ejercicio 2.",
+          context: "Ventas presupuestadas sin IVA: trimestre 1 $300.000, trimestre 2 $480.000, trimestre 3 $270.000, trimestre 4 $690.000. Saldo real de deudores al cierre ejercicio 1: $520.000, se cobrara 80% en ejercicio 2 y 20% en ejercicio 3. Ventas ejercicio 2 a credito a 60 dias, uniformes por trimestre, IVA 23%.",
+          answer: 669800,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: 669.800."
+        },
+        {
+          id: "jul23-11",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Caso 11: indique la variacion economica del costo de ventas.",
+          context: "Periodo 01/01/año1-30/06/año1. Ventas presupuestadas: 430 unidades. Costo de compra presupuestado $20; real $21. Existencia inicial: 200 unidades a $22. Politica de stock: mantener al cierre el mismo stock de unidades que al inicio, cumplida. Compras reales: 390 unidades. FIFO.",
+          answer: -190,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: -190."
+        },
+        {
+          id: "jul23-12",
+          unit: "ut1",
+          type: "numeric",
+          prompt: "Caso 12: determine el resultado total de la empresa con centros de responsabilidad y precios de transferencia.",
+          context: "Empresa que adquiere y revende inmuebles. Gerencia de Adquisiciones transfiere a Comercial al costo de adquisicion mas 25%. Gerencia de Mantenimiento transfiere a Comercial al costo de reformas mas 23%. Ingresos por ventas totales $890.000. Costo de adquisicion $712.000. Otros costos: Adquisiciones $6.300, Mantenimiento $4.200, Comercial $10.500. Resultado de Mantenimiento informado: -185.652.",
+          answer: 14600,
+          tolerance: 0.01,
+          explanation: "Los precios de transferencia afectan resultados internos, pero se eliminan para resultado total empresa. Respuesta correcta: 14.600."
+        },
+        {
+          id: "jul23-13",
+          unit: "ut23",
+          prompt: "Pregunta 13: (1) La venta de productos con contribucion marginal positiva disminuye el resultado si el precio no cubre costo completo. (2) Si el precio no supera el costo completo, la venta brinda resultado economico negativo y debe evitarse.",
+          options: ["Las dos afirmaciones son correctas", "La afirmacion 1 es correcta y la 2, incorrecta", "La afirmacion 2 es correcta y la 1, incorrecta", "Las dos afirmaciones son incorrectas", "Dejar en blanco"],
+          answer: 3,
+          explanation: "Ambas son incorrectas desde la logica del analisis marginal si hay contribucion positiva y no cambian los fijos relevantes."
+        },
+        {
+          id: "jul23-14",
+          unit: "ut23",
+          prompt: "Pregunta 14: (1) En un solo producto, la utilidad es unidades sobre punto de equilibrio multiplicadas por contribucion marginal unitaria. (2) La utilidad es unidades del punto de equilibrio multiplicadas por contribucion marginal unitaria.",
+          options: ["Las dos afirmaciones son correctas", "La afirmacion 1 es correcta y la 2, incorrecta", "La afirmacion 2 es correcta y la 1, incorrecta", "Las dos afirmaciones son incorrectas", "Dejar en blanco"],
+          answer: 1,
+          explanation: "La afirmacion 1 es correcta. La 2 confunde cobertura de costos fijos con utilidad."
+        },
+        {
+          id: "jul23-15",
+          unit: "ut1",
+          prompt: "Pregunta 15: (i) En general, los centros de inversion se ubican en niveles inferiores de la estructura. (ii) En general, los precios de transferencia no funcionan en culturas orientadas a incentivos economicos e iniciativa individual.",
+          options: ["Solo la primera es correcta", "Solo la segunda es correcta", "Ambas afirmaciones son correctas", "Ninguna de las dos afirmaciones es correcta", "Dejar en blanco"],
+          answer: 3,
+          explanation: "Respuesta correcta del examen: ninguna de las dos afirmaciones es correcta."
+        },
+        {
+          id: "jul23-16",
+          unit: "ut4",
+          prompt: "Pregunta 16: (i) Los desvios en el Estado de Situacion Patrimonial tienen que ver con inversion y financiamiento. (ii) En el calculo del ciclo de conversion de cuentas a cobrar deben incluirse todas las ventas del periodo, sean a credito o no.",
+          options: ["Solo la primera es correcta", "Solo la segunda es correcta", "Ambas afirmaciones son correctas", "Ninguna de las dos afirmaciones es correcta", "Dejar en blanco"],
+          answer: 0,
+          explanation: "La primera es correcta. La segunda no: el ciclo de cuentas a cobrar se vincula con ventas a credito."
+        }
       ]
     },
     {
