@@ -521,10 +521,21 @@ button {
   border-radius: 999px;
 }
 
+.tab small {
+  display: inline-block;
+  margin-right: 6px;
+  color: var(--muted);
+  font-weight: 800;
+}
+
 .tab.active {
   background: var(--primary);
   border-color: var(--primary);
   color: #fff;
+}
+
+.tab.active small {
+  color: #dbeafe;
 }
 
 .exercise-layout {

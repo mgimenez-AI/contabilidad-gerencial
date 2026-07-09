@@ -590,4 +590,122 @@
     { pdf: "Diferencia de Utilidades", units: ["UT3"], role: "Practica obligatoria para inventarios y diferencias entre costeo completo y variable." },
     { pdf: "Presupuesto, desvios, stocks y planillas", units: ["UT4"], role: "Base teorica y practica obligatoria: presupuesto, control, stocks, rotacion y modelos en planilla." }
   ];
+
+  const extraGuidedExercises = [
+    {
+      id: "relevancia-pedido-especial",
+      unit: "ut1",
+      title: "Decision: pedido especial y costos relevantes",
+      difficulty: "Inicial",
+      source: "UT1 + Analisis marginal",
+      intro: "Una empresa tiene capacidad ociosa. Un cliente ofrece comprar 1.000 unidades a $42. El costo variable unitario es $30. Los costos fijos comunes son $25.000 mensuales y no cambian. Para atender el pedido se paga un flete especial total de $4.000.",
+      steps: [
+        { prompt: "Calcula el ingreso diferencial del pedido.", answer: 42000, tolerance: 0.01, explanation: "Ingreso diferencial = 1.000 x 42 = 42.000." },
+        { prompt: "Calcula los costos variables diferenciales de produccion.", answer: 30000, tolerance: 0.01, explanation: "Costo variable diferencial = 1.000 x 30 = 30.000." },
+        { prompt: "Calcula el resultado diferencial del pedido.", answer: 8000, tolerance: 0.01, explanation: "42.000 - 30.000 - 4.000 = 8.000. Los fijos comunes no cambian, por eso no entran." }
+      ]
+    },
+    {
+      id: "pangolin-diferencia-utilidades",
+      unit: "ut3",
+      title: "Pangolin: diferencia de utilidades por stock",
+      difficulty: "Inicial",
+      source: "UT3 Diferencia de Utilidades",
+      intro: "Una empresa produce 100 unidades. Costo variable unitario $10 y costo completo unitario $12. Vende 80 unidades a $24. No hay inventario inicial ni otros costos fijos que los de produccion.",
+      steps: [
+        { prompt: "Calcula el costo fijo de produccion total absorbido.", answer: 200, tolerance: 0.01, explanation: "Diferencia por unidad = 12 - 10 = 2. Fijo total absorbido = 100 x 2 = 200." },
+        { prompt: "Calcula la utilidad por costeo variable.", answer: 920, tolerance: 0.01, explanation: "Ventas 80 x 24 = 1.920. CV vendido 80 x 10 = 800. Menos CF 200. Utilidad variable = 920." },
+        { prompt: "Calcula la utilidad por costeo completo.", answer: 960, tolerance: 0.01, explanation: "Ventas 1.920 - costo completo vendido 80 x 12 = 960. Utilidad completa = 960." },
+        { prompt: "Calcula la diferencia entre utilidad completa y variable.", answer: 40, tolerance: 0.01, explanation: "Completo supera a variable por 40, equivalente a 20 unidades en stock x $2 de fijo activado." }
+      ]
+    },
+    {
+      id: "diferencia-utilidades-inventario-inicial",
+      unit: "ut3",
+      title: "Inventario inicial: fijos que salen del stock",
+      difficulty: "Intermedio",
+      source: "UT3 Casos Ponderosa/Pangolin",
+      intro: "Inventario inicial: 300 unidades con costo completo $125 y variable $110. En el periodo se producen 1.000 unidades con costo completo $132 y variable $114. Se venden 1.100 unidades con FIFO. No necesitas calcular ventas.",
+      steps: [
+        { prompt: "Calcula el fijo absorbido unitario contenido en el inventario inicial.", answer: 15, tolerance: 0.01, explanation: "125 - 110 = 15 por unidad inicial." },
+        { prompt: "Calcula el fijo absorbido unitario de la produccion del periodo.", answer: 18, tolerance: 0.01, explanation: "132 - 114 = 18 por unidad producida." },
+        { prompt: "Calcula cuantas unidades finales quedan en stock.", answer: 200, tolerance: 0.01, explanation: "300 iniciales + 1.000 producidas - 1.100 vendidas = 200." },
+        { prompt: "Calcula los fijos contenidos en el inventario final.", answer: 3600, tolerance: 0.01, explanation: "Con FIFO, el stock final queda de produccion del periodo: 200 x 18 = 3.600." },
+        { prompt: "Calcula la diferencia de utilidades: fijos en IF menos fijos en II.", answer: -900, tolerance: 0.01, explanation: "Fijos en II = 300 x 15 = 4.500. Fijos en IF = 3.600. Diferencia = -900: completo queda por debajo de variable." }
+      ]
+    },
+    {
+      id: "presupuesto-compras-stock",
+      unit: "ut4",
+      title: "Presupuesto: compras, stock y proveedores",
+      difficulty: "Intermedio",
+      source: "UT4 Ciclo compras",
+      intro: "Una empresa comercial espera vender 12.000 unidades. Tiene stock inicial de 2.000 unidades y desea terminar con stock final de seguridad de 3.500 unidades. Costo de compra $18. El proveedor financia 25% de las compras al cierre.",
+      steps: [
+        { prompt: "Calcula las unidades a comprar.", answer: 13500, tolerance: 0.01, explanation: "Compras = ventas + stock final deseado - stock inicial = 12.000 + 3.500 - 2.000 = 13.500." },
+        { prompt: "Calcula el importe total de compras.", answer: 243000, tolerance: 0.01, explanation: "13.500 x 18 = 243.000." },
+        { prompt: "Calcula el saldo final de proveedores.", answer: 60750, tolerance: 0.01, explanation: "25% de 243.000 queda financiado: 60.750." },
+        { prompt: "Calcula el valor del stock final.", answer: 63000, tolerance: 0.01, explanation: "3.500 unidades x 18 = 63.000." }
+      ]
+    },
+    {
+      id: "presupuesto-ventas-caja",
+      unit: "ut4",
+      title: "Presupuesto: ventas, deudores y caja",
+      difficulty: "Intermedio",
+      source: "UT4 Ciclo ventas",
+      intro: "Ventas presupuestadas: enero $100.000, febrero $120.000 y marzo $90.000. Se cobra 60% contado y 40% al mes siguiente. Hay deudores iniciales por $30.000 que se cobran en enero.",
+      steps: [
+        { prompt: "Calcula la cobranza total de enero.", answer: 90000, tolerance: 0.01, explanation: "60% de ventas de enero = 60.000, mas deudores iniciales 30.000. Total 90.000." },
+        { prompt: "Calcula la cobranza total de febrero.", answer: 112000, tolerance: 0.01, explanation: "60% de febrero = 72.000, mas 40% de enero = 40.000. Total 112.000." },
+        { prompt: "Calcula la cobranza total de marzo.", answer: 102000, tolerance: 0.01, explanation: "60% de marzo = 54.000, mas 40% de febrero = 48.000. Total 102.000." },
+        { prompt: "Calcula el saldo final de deudores al cierre de marzo.", answer: 36000, tolerance: 0.01, explanation: "Queda pendiente 40% de marzo: 90.000 x 40% = 36.000." }
+      ]
+    },
+    {
+      id: "stock-rotacion-lotes",
+      unit: "ut4",
+      title: "Gestion de stocks: lote, stock medio y rotacion",
+      difficulty: "Inicial",
+      source: "UT4 Gestion de stocks",
+      intro: "Consumo mensual de materia prima: 30.000 kg. La empresa compra en lotes de 10.000 kg. Consumo diario uniforme: 1.000 kg. Precio de compra $2 por kg.",
+      steps: [
+        { prompt: "Calcula la cantidad de compras por mes.", answer: 3, tolerance: 0.01, explanation: "30.000 / 10.000 = 3 compras por mes." },
+        { prompt: "Calcula el stock medio fisico si el lote es 10.000 kg.", answer: 5000, tolerance: 0.01, explanation: "Con consumo uniforme y sin stock de seguridad: lote / 2 = 5.000 kg." },
+        { prompt: "Calcula la inversion promedio en stock.", answer: 10000, tolerance: 0.01, explanation: "5.000 kg x $2 = 10.000." },
+        { prompt: "Calcula la velocidad de rotacion mensual.", answer: 6, tolerance: 0.01, explanation: "Consumo mensual / stock medio = 30.000 / 5.000 = 6 vueltas por mes." }
+      ]
+    },
+    {
+      id: "desvio-presupuesto-flexible",
+      unit: "ut4",
+      title: "Control: presupuesto flexible",
+      difficulty: "Intermedio",
+      source: "UT4 Desvios",
+      intro: "Se presupuesto vender 1.000 unidades. Costo variable presupuestado $8 por unidad y costo fijo $5.000. Realmente se vendieron 1.200 unidades y el costo total real fue $15.100.",
+      steps: [
+        { prompt: "Calcula el costo total del presupuesto original.", answer: 13000, tolerance: 0.01, explanation: "1.000 x 8 + 5.000 = 13.000." },
+        { prompt: "Calcula el costo flexible para 1.200 unidades.", answer: 14600, tolerance: 0.01, explanation: "1.200 x 8 + 5.000 = 14.600." },
+        { prompt: "Calcula el desvio controlable contra presupuesto flexible.", answer: 500, tolerance: 0.01, explanation: "Real 15.100 - flexible 14.600 = 500 desfavorable. No todo el aumento contra el presupuesto original era ineficiencia: parte se explica por mayor volumen." }
+      ]
+    },
+    {
+      id: "modelo-planilla-auditable",
+      unit: "ut4",
+      title: "Planilla: detectar error de modelo",
+      difficulty: "Conceptual aplicado",
+      source: "UT4 Modelos en planilla",
+      intro: "Un presupuesto calcula ventas del anio 2 con la formula: ventas anio 1 x 1,08 x 1,05 x 250. La tasa de crecimiento, la cuota de mercado y el precio estan escritos dentro de la formula.",
+      steps: [
+        { prompt: "Cuantos supuestos duros estan escondidos dentro de la formula?", answer: 3, tolerance: 0.01, explanation: "Hay tres datos/supuestos dentro de la formula: 1,08, 1,05 y 250." },
+        { prompt: "Si ventas anio 1 son 10.000 unidades base, calcula el resultado de la formula.", answer: 2835000, tolerance: 0.01, explanation: "10.000 x 1,08 x 1,05 x 250 = 2.835.000." },
+        { prompt: "Cuantos de esos supuestos deberian estar en celdas de datos separadas?", answer: 3, tolerance: 0.01, explanation: "Los tres. La regla del material es separar datos y logica para que el modelo sea auditable y facil de actualizar." }
+      ]
+    }
+  ];
+
+  const existingExercises = new Set((window.CG_DATA.guidedExercises || []).map((exercise) => exercise.id));
+  for (const exercise of extraGuidedExercises) {
+    if (!existingExercises.has(exercise.id)) window.CG_DATA.guidedExercises.push(exercise);
+  }
 })();

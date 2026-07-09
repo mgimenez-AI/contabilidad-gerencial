@@ -553,7 +553,7 @@ function renderPractice() {
   const done = progress.completedExercises.includes(exercise.id);
   const tabs = DATA.guidedExercises.map((item) => `
     <button class="tab ${state.selectedExercise === item.id ? "active" : ""}" data-action="select-exercise" data-exercise="${item.id}">
-      ${item.title}
+      <small>${unitLabel(item.unit)}</small>${item.title}
     </button>
   `).join("");
   const steps = exercise.steps.map((item, index) => `
