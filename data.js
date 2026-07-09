@@ -1021,16 +1021,160 @@ window.CG_DATA = {
     {
       id: "febrero-2023",
       title: "Examen Febrero 2023",
-      meta: "Formato Moodle: 16 preguntas. Version interactiva con preguntas practicas y teoricas representadas desde el PDF.",
+      meta: "Examen real reconstruido desde Moodle/PDF: 12 preguntas practicas numericas y 4 teoricas de multiple opcion. Obligatorias: 1, 8 y 12.",
       questions: [
-        { id: "feb23-1", unit: "ut4", prompt: "Caso de presupuesto/flujo: resultado correcto de la pregunta practica 12.", options: ["120", "127", "69", "244,100"], answer: 0, explanation: "Respuesta correcta extraida del examen: 120." },
-        { id: "feb23-2", unit: "ut23", prompt: "La venta con contribucion marginal positiva produce disminucion del resultado si no cubre costo completo.", options: ["Correcto", "Incorrecto", "Solo si no hay capacidad", "Solo con inventarios"], answer: 1, explanation: "La afirmacion es incorrecta desde analisis marginal con capacidad ociosa." },
-        { id: "feb23-3", unit: "ut23", prompt: "Cuando el nivel de produccion aumenta, los costos fijos totales disminuyen.", options: ["Correcto", "Incorrecto", "Solo en costeo completo", "Solo si son variables"], answer: 1, explanation: "El costo fijo total no disminuye por aumentar produccion dentro del rango relevante; baja el fijo unitario." },
-        { id: "feb23-4", unit: "ut23", prompt: "Con restricciones de capacidad, debe priorizarse mayor contribucion marginal por unidad de recurso escaso.", options: ["Correcto", "Incorrecto", "Siempre mayor precio", "Siempre mayor RC"], answer: 0, explanation: "Ese es el criterio economico correcto." },
-        { id: "feb23-5", unit: "ut23", prompt: "Con restricciones de capacidad, siempre se prioriza mayor contribucion marginal sobre ventas.", options: ["Correcto", "Incorrecto", "Solo si no hay recurso escaso", "Solo en presupuestos"], answer: 1, explanation: "Debe mirarse contribucion por recurso escaso, no solo porcentaje sobre ventas." },
-        { id: "feb23-6", unit: "ut1", prompt: "Los precios de transferencia siempre mejoran una cultura colaborativa.", options: ["Correcto", "Incorrecto", "Siempre", "No depende de incentivos"], answer: 1, explanation: "Pueden generar conflictos si no se alinean con la cultura e incentivos." },
-        { id: "feb23-7", unit: "ut4", prompt: "Los desvios en el Estado de Situacion Patrimonial se relacionan con inversion y financiamiento.", options: ["Correcto", "Incorrecto", "No aplica", "Solo con IVA"], answer: 0, explanation: "La afirmacion fue considerada correcta en el examen." },
-        { id: "feb23-8", unit: "ut4", prompt: "El analisis de desvios en ventas y costos es siempre control estrategico.", options: ["Correcto", "Incorrecto", "Solo si hay presupuesto", "Solo si hay inventario"], answer: 1, explanation: "Es tipicamente control de gestion/operativo, no necesariamente estrategico." }
+        {
+          id: "feb23-1",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Pregunta 1 (obligatoria): determine la cantidad mensual de motos acuaticas que la empresa vende actualmente.",
+          context: "La firma importa y vende motos acuaticas. Costos variables: $100 por unidad. Ventas mensuales actuales: $450.000. Utilidad del 100% sobre costos totales. Costos fijos mensuales: $172.000.",
+          answer: 530,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: 530 unidades."
+        },
+        {
+          id: "feb23-2",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Pregunta 2 - ROBOTS SA: determine la cantidad a comprar y vender del producto A para maximizar la contribucion marginal total.",
+          context: "Robot A: precio $150, costo variable $100, contribucion $50, demanda 10.000 unidades.\nRobot B: precio $210, costo variable $120, contribucion $90, demanda 8.000 unidades.\nRestriccion financiera para compra de mercaderia: $1.221.600.",
+          answer: 2616,
+          tolerance: 0.01,
+          explanation: "Se prioriza B porque aporta 90/120 = 0,75 por peso invertido, frente a A con 50/100 = 0,50. Comprar toda la demanda de B usa 8.000 x 120 = 960.000. Saldo 261.600; A = 261.600 / 100 = 2.616."
+        },
+        {
+          id: "feb23-3",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Pregunta 3 - JT SRL: determine el nivel de actividad en unidades a partir del cual conviene abrir la sucursal Pinar.",
+          context: "Local actual: precio $120, costos variables promedio $65, costos fijos $300.000 y capacidad plena.\nSucursal Pinar: costos fijos $26.400, precio $300, costos variables comerciales 10% sobre precio.",
+          answer: 176,
+          tolerance: 0.01,
+          explanation: "En Pinar, la contribucion por unidad es 300 - 65 - 30 = 205. Como la empresa trabaja a capacidad plena, cada unidad en Pinar desplaza una unidad del local actual que aportaba 120 - 65 = 55. Mejora neta por unidad = 150. Punto de indiferencia = 26.400 / 150 = 176."
+        },
+        {
+          id: "feb23-4",
+          unit: "ut23",
+          type: "numeric",
+          prompt: "Pregunta 4: determine el nivel de actividad en unidades a alcanzar con la planta ampliada para mantener el porcentaje actual de beneficio sobre costos totales.",
+          context: "Producto C: se extraen 80 kg de C y 10 kg del subproducto D por cada 100 kg de materia prima procesada.\nCosto materia prima $85/kg. Otros costos variables de produccion $10/kg de materia prima. Precio C $200/kg. Precio subproducto $60/kg. Comisiones 5% sobre ventas. Costos fijos $217.000. Planta actual procesa 10.000 kg y vende todo. Duplicar capacidad aumenta 49% los costos fijos.",
+          answer: 14900,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: 14.900 unidades."
+        },
+        {
+          id: "feb23-5",
+          unit: "ut3",
+          type: "numeric",
+          prompt: "Pregunta 5 - La Banda SA: determine el costo de lo vendido del periodo por costeo completo.",
+          context: "IIPT: 2.000 unidades, completo $150, variable $126.\nIIPP: completo $50.000, variable $40.000.\nProduccion terminada del ejercicio: 12.000 unidades, completo $143, variable $122.\nIFPP: completo $60.000, variable $50.000.\nSe vendieron 13.500 unidades con FIFO.",
+          answer: 1944500,
+          tolerance: 0.01,
+          explanation: "Por FIFO se venden 2.000 unidades iniciales a $150 y 11.500 unidades producidas a $143. Costo vendido = 2.000 x 150 + 11.500 x 143 = 1.944.500."
+        },
+        {
+          id: "feb23-6",
+          unit: "ut3",
+          type: "numeric",
+          prompt: "Pregunta 6: con los datos anteriores y utilidad por costeo completo de $100.000, determine la utilidad por costeo variable.",
+          context: "Usar los datos de La Banda SA. La utilidad por costeo completo asciende a $100.000.",
+          answer: 137500,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: 137.500."
+        },
+        {
+          id: "feb23-7",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Pregunta 7: determine los ingresos por ventas del producto A a incluir en el Estado de Resultados presupuestado del año 2.",
+          context: "Producto A: en año 1 la empresa alcanzo market share 14% sobre 71.000 unidades vendidas por el mercado. Precio año 1: $16. En año 2 el market share sera 16%, el precio baja $3 por unidad y el mercado total aumenta 10% en unidades.",
+          answer: 162448,
+          tolerance: 0.01,
+          explanation: "Mercado año 2 = 71.000 x 1,10 = 78.100. Participacion empresa = 16%, unidades = 12.496. Precio año 2 = 13. Ventas = 12.496 x 13 = 162.448."
+        },
+        {
+          id: "feb23-8",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Pregunta 8 (obligatoria): determine el saldo de Deudores por Ventas al cierre del año 2.",
+          context: "Ingresos por ventas presupuestados del año 2: $1.560.000. La empresa planifica vender 60% a credito y otorgar 90 dias de plazo. Ventas uniformes mes a mes. Año comercial de 360 dias. Sin IVA.",
+          answer: 234000,
+          tolerance: 0.01,
+          explanation: "Ventas a credito anuales = 1.560.000 x 60% = 936.000. Plazo 90 dias sobre año de 360 implica 1/4 pendiente al cierre. Deudores = 936.000 x 90/360 = 234.000."
+        },
+        {
+          id: "feb23-9",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Pregunta 9: determine el saldo de Deudas Financieras al 31/12/año 1.",
+          context: "Prestamo contratado el 01/04/año 1 para capital de trabajo. Capital $3.000.000. Interes 5,7% semestral lineal sobre saldos. 10 cuotas de amortizacion constante semestrales y consecutivas, primera el 30/09/año 1. En Deudas Financieras se incluye capital e intereses devengados y no pagados. Las cuotas fueron abonadas en fecha.",
+          answer: 2776950,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: 2.776.950."
+        },
+        {
+          id: "feb23-10",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Pregunta 10: determine el total de intereses pagados del ejercicio anual cerrado el 31/12/año 1.",
+          context: "Usar los datos del prestamo de la pregunta anterior: capital $3.000.000, interes 5,7% semestral lineal sobre saldos, cuotas semestrales de amortizacion constante, primera el 30/09/año 1.",
+          answer: 171000,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: 171.000."
+        },
+        {
+          id: "feb23-11",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Pregunta 11: indique el total de cobros a incluir en el flujo de fondos presupuestado.",
+          context: "Periodo 01/03/23-29/02/24. Saldo inicial disponible $700.000. Total de pagos $5.020.000. Saldo final minimo $230.000. Producto unico: precio $1.400 y cantidad presupuestada 280 por mes. Ventas uniformes, 100% a credito a 2 meses. Deudores iniciales $600.000, cobrados en abril 2023.",
+          answer: 4520000,
+          tolerance: 0.01,
+          explanation: "Respuesta correcta del examen: 4.520.000."
+        },
+        {
+          id: "feb23-12",
+          unit: "ut4",
+          type: "numeric",
+          prompt: "Pregunta 12 (obligatoria): calcule el ciclo de conversion de cuentas a pagar en dias para el año 2.",
+          context: "Proveedores promedio año 2: $66.000. Compras del año 2: todas a $10 por unidad. Stock inicial: 25.000 unidades a $12. Ventas: 33.250 unidades. Stock final: 11.550 unidades. Compras 100% a credito. Año comercial 360 dias.",
+          answer: 120,
+          tolerance: 0.01,
+          explanation: "Compras en unidades = ventas + stock final - stock inicial = 33.250 + 11.550 - 25.000 = 19.800. Compras a credito = 19.800 x 10 = 198.000. Compras diarias = 198.000 / 360 = 550. Ciclo = 66.000 / 550 = 120 dias."
+        },
+        {
+          id: "feb23-13",
+          unit: "ut23",
+          prompt: "Pregunta 13: (1) La venta de productos con contribucion marginal positiva produce una disminucion del resultado economico si el precio no cubre costo completo. (2) Cuando el nivel de produccion aumenta, los costos fijos disminuyen.",
+          options: ["Las dos afirmaciones son correctas", "La afirmacion 1 es correcta y la 2, incorrecta", "La afirmacion 2 es correcta y la 1, incorrecta", "Las dos afirmaciones son incorrectas", "Dejar la respuesta en blanco"],
+          answer: 3,
+          explanation: "Ambas afirmaciones son incorrectas. La contribucion positiva mejora el resultado si no agrega estructura relevante; los costos fijos totales no disminuyen por producir mas dentro del rango relevante."
+        },
+        {
+          id: "feb23-14",
+          unit: "ut23",
+          prompt: "Pregunta 14: (1) Con restricciones de capacidad, se debe priorizar mayor contribucion marginal por unidad de recurso escaso. (2) Con restricciones, se debe priorizar siempre mayor contribucion marginal sobre ventas.",
+          options: ["Las dos afirmaciones son correctas", "La afirmacion 1 es correcta y la 2, incorrecta", "La afirmacion 2 es correcta y la 1, incorrecta", "Las dos afirmaciones son incorrectas", "Dejar la respuesta en blanco"],
+          answer: 1,
+          explanation: "La primera afirmacion es correcta. La segunda es incorrecta: no alcanza con mirar porcentaje sobre ventas; importa el recurso escaso."
+        },
+        {
+          id: "feb23-15",
+          unit: "ut1",
+          prompt: "Pregunta 15: (i) Establecer precios de transferencia suele ser beneficioso para mantener una cultura colaborativa de obtencion del resultado. (ii) En general los centros de costos de inversion se pueden controlar a traves del presupuesto.",
+          options: ["Solo la primera es correcta", "Solo la segunda es correcta", "Ambas afirmaciones son correctas", "Ninguna de las dos afirmaciones es correcta", "Dejar en blanco la respuesta"],
+          answer: 3,
+          explanation: "Respuesta correcta del examen: ninguna de las dos afirmaciones es correcta."
+        },
+        {
+          id: "feb23-16",
+          unit: "ut4",
+          prompt: "Pregunta 16: (i) Los desvios en el Estado de Situacion Patrimonial tienen que ver con inversion y financiamiento. (ii) El analisis de desvios en ventas y costos es un tipico ejemplo de control estrategico.",
+          options: ["Solo la primera es correcta", "Solo la segunda es correcta", "Ambas afirmaciones son correctas", "Ninguna de las dos afirmaciones es correcta", "Dejar en blanco la respuesta"],
+          answer: 0,
+          explanation: "La primera afirmacion es correcta. La segunda es incorrecta: ventas y costos se vinculan tipicamente con control de gestion/operativo, no necesariamente control estrategico."
+        }
       ]
     }
   ],
