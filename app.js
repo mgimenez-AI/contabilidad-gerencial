@@ -7,6 +7,8 @@ const state = {
   selectedLesson: "ut23-l1",
   selectedExercise: DATA.guidedExercises[0].id,
   selectedRealExam: DATA.realExams[0].id,
+  realExamAnswers: {},
+  realExamFinished: false,
   exerciseStep: 0,
   quizIndex: 0,
   quizUnit: "all",
@@ -21,7 +23,15 @@ const viewEl = document.querySelector("#view");
 const viewTitle = document.querySelector("#viewTitle");
 
 function loadProgress() {
-  const fallback = { seenLessons: [], completedExercises: [], quizCorrect: 0, quizTotal: 0, examRuns: [] };
+  const fallback = {
+    seenLessons: [],
+    completedExercises: [],
+    quizCorrect: 0,
+    quizTotal: 0,
+    examRuns: [],
+    realExamRuns: [],
+    questionAttempts: [],
+  };
   try {
     return { ...fallback, ...(JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}) };
   } catch {
@@ -111,6 +121,7 @@ function titleForView(view) {
     exam: "Simulacro de examen",
     topicPage: "Lectura por subtema",
     realExam: "Simulacros reales",
+    analytics: "Medicion de avance",
     sources: "Material fuente",
   }[view];
 }
@@ -143,6 +154,42 @@ function renderProgress() {
 
 function card(content, extraClass = "") {
   return `<article class="card ${extraClass}">${content}</article>`;
+}
+
+function unitLabel(unitId) {
+  return (DATA.units.find((unit) => unit.id === unitId) || {}).short || "General";
+}
+
+function recordQuestionAttempt(question, selected, source) {
+  progress.questionAttempts.push({
+    id: question.id,
+    unit: question.unit,
+    prompt: question.prompt,
+    correct: selected === question.answer,
+    source,
+    date: new Date().toISOString(),
+  });
+}
+
+function unitPerformance() {
+  return DATA.units.map((unit) => {
+    const attempts = progress.questionAttempts.filter((item) => item.unit === unit.id);
+    const correct = attempts.filter((item) => item.correct).length;
+    const lessons = unitLessons(unit);
+    const seen = lessons.filter((lesson) => progress.seenLessons.includes(lesson.id)).length;
+    const exercises = DATA.guidedExercises.filter((exercise) => exercise.unit === unit.id);
+    const completed = exercises.filter((exercise) => progress.completedExercises.includes(exercise.id)).length;
+    return {
+      unit,
+      attempts,
+      correct,
+      accuracy: attempts.length ? Math.round((correct / attempts.length) * 100) : null,
+      seen,
+      lessons: lessons.length,
+      completed,
+      exercises: exercises.length,
+    };
+  });
 }
 
 function renderDashboard() {
@@ -181,6 +228,92 @@ function renderDashboard() {
         <div class="formula">Qe = CF / mc</div>
         <div class="formula">Ve = CF / rc</div>
         <div class="formula">Compras = consumo + SF deseado - SI</div>
+      `)}
+    </div>
+  `;
+}
+
+function renderAnalytics() {
+  const stats = unitPerformance();
+  const totalLessons = DATA.units.reduce((sum, unit) => sum + unitLessons(unit).length, 0);
+  const totalExercises = DATA.guidedExercises.length;
+  const readPct = totalLessons ? Math.round((progress.seenLessons.length / totalLessons) * 100) : 0;
+  const exercisePct = totalExercises ? Math.round((progress.completedExercises.length / totalExercises) * 100) : 0;
+  const totalAttempts = progress.questionAttempts.length;
+  const totalCorrect = progress.questionAttempts.filter((item) => item.correct).length;
+  const accuracy = totalAttempts ? Math.round((totalCorrect / totalAttempts) * 100) : 0;
+  const weakUnits = stats
+    .filter((item) => item.attempts.length >= 2 && item.accuracy < 70)
+    .sort((a, b) => a.accuracy - b.accuracy);
+  const missingLessons = DATA.units.flatMap((unit) =>
+    unitLessons(unit)
+      .filter((lesson) => !progress.seenLessons.includes(lesson.id))
+      .map((lesson) => ({ unit, lesson }))
+  );
+  const missingExercises = DATA.guidedExercises.filter((exercise) => !progress.completedExercises.includes(exercise.id));
+  const recentMistakes = [...progress.questionAttempts].reverse().filter((item) => !item.correct).slice(0, 8);
+  const lastRealExam = progress.realExamRuns.length ? progress.realExamRuns[progress.realExamRuns.length - 1] : null;
+  const unitRows = stats.map((item) => {
+    const readWidth = item.lessons ? Math.round((item.seen / item.lessons) * 100) : 0;
+    const exerciseWidth = item.exercises ? Math.round((item.completed / item.exercises) * 100) : 0;
+    const accuracyWidth = item.accuracy ?? 0;
+    return `
+      <div class="kpi-row">
+        <div>
+          <strong>${item.unit.short}</strong>
+          <small>${item.unit.title}</small>
+        </div>
+        <div class="mini-bars">
+          <label>Lectura ${item.seen}/${item.lessons}<span><i style="width:${readWidth}%"></i></span></label>
+          <label>Ejercicios ${item.completed}/${item.exercises}<span><i style="width:${exerciseWidth}%"></i></span></label>
+          <label>Preguntas ${item.accuracy === null ? "sin datos" : `${item.accuracy}%`}<span><i style="width:${accuracyWidth}%"></i></span></label>
+        </div>
+      </div>
+    `;
+  }).join("");
+  const focus = weakUnits.length
+    ? weakUnits.map((item) => `<span class="pill required">${item.unit.short}: ${item.accuracy}%</span>`).join("")
+    : `<span class="pill">Sin focos criticos aun</span>`;
+
+  viewEl.innerHTML = `
+    <div class="grid four">
+      ${card(`<div class="metric"><span>Lectura</span><strong>${readPct}%</strong></div><p>${progress.seenLessons.length} de ${totalLessons} subtemas vistos.</p>`)}
+      ${card(`<div class="metric"><span>Practica</span><strong>${exercisePct}%</strong></div><p>${progress.completedExercises.length} de ${totalExercises} ejercicios guiados completados.</p>`)}
+      ${card(`<div class="metric"><span>Precision</span><strong>${accuracy}%</strong></div><p>${totalCorrect} correctas de ${totalAttempts} respuestas registradas.</p>`)}
+      ${card(`<div class="metric"><span>Ultimo real</span><strong>${lastRealExam ? `${lastRealExam.score}%` : "--"}</strong></div><p>${lastRealExam ? lastRealExam.title : "Todavia no rendiste un examen real en la app."}</p>`)}
+    </div>
+
+    ${card(`
+      <h3>Mapa de avance por unidad</h3>
+      <div class="kpi-list">${unitRows}</div>
+    `)}
+
+    <div class="grid two">
+      ${card(`
+        <h3>Donde enfocarte ahora</h3>
+        <div class="pill-row">${focus}</div>
+        <p>${weakUnits.length ? "Prioriza estas unidades: tienen suficientes respuestas registradas y precision baja." : "A medida que respondas quizzes y examenes reales, aca van a aparecer tus zonas flojas."}</p>
+      `)}
+      ${card(`
+        <h3>Te falta leer</h3>
+        <div class="study-list">
+          ${missingLessons.slice(0, 8).map((item) => `<button class="study-item" data-action="open-topic-page" data-unit="${item.unit.id}" data-lesson="${item.lesson.id}"><strong>${item.unit.short}</strong><span>${item.lesson.title}</span></button>`).join("") || "<p>Lectura completa.</p>"}
+        </div>
+      `)}
+    </div>
+
+    <div class="grid two">
+      ${card(`
+        <h3>Ejercicios pendientes</h3>
+        <div class="study-list">
+          ${missingExercises.map((exercise) => `<button class="study-item" data-action="select-exercise" data-exercise="${exercise.id}"><strong>${unitLabel(exercise.unit)}</strong><span>${exercise.title}</span></button>`).join("") || "<p>Ejercicios guiados completos.</p>"}
+        </div>
+      `)}
+      ${card(`
+        <h3>Errores recientes</h3>
+        <div class="study-list">
+          ${recentMistakes.map((item) => `<div class="study-item passive"><strong>${unitLabel(item.unit)}</strong><span>${item.prompt}</span><small>${item.source}</small></div>`).join("") || "<p>Todavia no hay errores registrados.</p>"}
+        </div>
       `)}
     </div>
   `;
@@ -454,28 +587,69 @@ function renderExam() {
 }
 
 function renderRealExam() {
-  const tabs = DATA.realExams.map((exam) => `
+  const exams = DATA.realExamSets || [];
+  const tabs = exams.map((exam) => `
     <button class="tab ${state.selectedRealExam === exam.id ? "active" : ""}" data-action="select-real-exam" data-exam="${exam.id}">
       ${exam.title.replace("Examen ", "")}
     </button>
   `).join("");
-  const exam = DATA.realExams.find((item) => item.id === state.selectedRealExam);
-  const items = exam.items.map((item, index) => `
-    <section class="real-question">
-      <span class="pill">Item ${index + 1}</span>
-      <h4>${item.title}</h4>
-      <p>${item.prompt}</p>
-      <div class="feedback">${item.guide}</div>
-    </section>
-  `).join("");
+  const exam = exams.find((item) => item.id === state.selectedRealExam) || exams[0];
+  if (!exam) {
+    viewEl.innerHTML = `${card(`<h3>Examenes reales</h3><p>No hay examenes cargados todavia.</p>`)}`;
+    return;
+  }
+  const answered = Object.keys(state.realExamAnswers).length;
+
+  if (state.realExamFinished) {
+    const correct = exam.questions.filter((question) => state.realExamAnswers[question.id] === question.answer).length;
+    const score = Math.round((correct / exam.questions.length) * 100);
+    const review = exam.questions.map((question, index) => {
+      const selected = state.realExamAnswers[question.id];
+      return `
+        <div class="step ${selected === question.answer ? "active" : ""}">
+          <strong>${index + 1}. ${selected === question.answer ? "Correcta" : "Para repasar"} - ${unitLabel(question.unit)}</strong>
+          <p>${question.prompt}</p>
+          <p>${question.explanation}</p>
+        </div>
+      `;
+    }).join("");
+    viewEl.innerHTML = `
+      <div class="tabs">${tabs}</div>
+      ${card(`
+        <h3>${exam.title}: ${score}%</h3>
+        <p>${correct} correctas de ${exam.questions.length}. Este resultado queda incluido en el tablero de avance.</p>
+        <button class="primary-btn" data-action="reset-real-exam">Volver a rendir</button>
+      `)}
+      ${card(`<h3>Correccion del examen</h3>${review}`)}
+    `;
+    return;
+  }
+
+  const questions = exam.questions.map((question, index) => {
+    const options = question.options.map((option, optionIndex) => `
+      <button class="option ${state.realExamAnswers[question.id] === optionIndex ? "selected" : ""}" data-action="answer-real-exam" data-question="${question.id}" data-answer="${optionIndex}">
+        ${option}
+      </button>
+    `).join("");
+    return `
+      <section class="lesson">
+        <span class="pill">${unitLabel(question.unit)}</span>
+        <h4>${index + 1}. ${question.prompt}</h4>
+        <div class="option-list">${options}</div>
+      </section>
+    `;
+  }).join("");
 
   viewEl.innerHTML = `
     <div class="tabs">${tabs}</div>
     ${card(`
       <h3>${exam.title}</h3>
       <p>${exam.meta}</p>
-      <div class="exam-note">Esta seccion usa los examenes reales como entrenamiento guiado. Para evitar aprender de memoria, las consignas estan convertidas en focos de resolucion y criterios de correccion.</div>
-      ${items}
+      <div class="quiz-footer sticky-exam">
+        <span class="pill">${answered}/${exam.questions.length} respondidas</span>
+        <button class="primary-btn" data-action="finish-real-exam" ${answered < exam.questions.length ? "disabled" : ""}>Finalizar y corregir</button>
+      </div>
+      ${questions}
     `)}
   `;
 }
@@ -510,6 +684,7 @@ function render() {
   if (state.view === "quiz") renderQuiz();
   if (state.view === "exam") renderExam();
   if (state.view === "realExam") renderRealExam();
+  if (state.view === "analytics") renderAnalytics();
   if (state.view === "sources") renderSources();
 }
 
@@ -537,6 +712,7 @@ function answerQuiz(answer) {
   if (state.quizAnswers[question.id] === undefined) {
     progress.quizTotal += 1;
     if (answer === question.answer) progress.quizCorrect += 1;
+    recordQuestionAttempt(question, answer, "Banco multiple opcion");
   }
   state.quizAnswers[question.id] = answer;
   saveProgress();
@@ -547,9 +723,22 @@ function finishExam() {
   const correct = state.examQuestions.filter((question) => state.examAnswers[question.id] === question.answer).length;
   const score = Math.round((correct / state.examQuestions.length) * 100);
   progress.examRuns.push({ date: new Date().toISOString(), score });
+  state.examQuestions.forEach((question) => recordQuestionAttempt(question, state.examAnswers[question.id], "Simulacro integral"));
   saveProgress();
   state.examFinished = true;
   renderExam();
+}
+
+function finishRealExam() {
+  const exams = DATA.realExamSets || [];
+  const exam = exams.find((item) => item.id === state.selectedRealExam) || exams[0];
+  const correct = exam.questions.filter((question) => state.realExamAnswers[question.id] === question.answer).length;
+  const score = Math.round((correct / exam.questions.length) * 100);
+  progress.realExamRuns.push({ date: new Date().toISOString(), title: exam.title, score });
+  exam.questions.forEach((question) => recordQuestionAttempt(question, state.realExamAnswers[question.id], exam.title));
+  saveProgress();
+  state.realExamFinished = true;
+  renderRealExam();
 }
 
 document.addEventListener("click", (event) => {
@@ -589,10 +778,12 @@ document.addEventListener("click", (event) => {
   if (action === "select-exercise") {
     state.selectedExercise = target.dataset.exercise;
     state.exerciseStep = 0;
-    renderPractice();
+    setView("practice");
   }
   if (action === "select-real-exam") {
     state.selectedRealExam = target.dataset.exam;
+    state.realExamAnswers = {};
+    state.realExamFinished = false;
     renderRealExam();
   }
   if (action === "check-exercise") checkExerciseAnswer();
@@ -624,6 +815,16 @@ document.addEventListener("click", (event) => {
     renderExam();
   }
   if (action === "finish-exam") finishExam();
+  if (action === "answer-real-exam") {
+    state.realExamAnswers[target.dataset.question] = Number(target.dataset.answer);
+    renderRealExam();
+  }
+  if (action === "finish-real-exam") finishRealExam();
+  if (action === "reset-real-exam") {
+    state.realExamAnswers = {};
+    state.realExamFinished = false;
+    renderRealExam();
+  }
 });
 
 document.addEventListener("change", (event) => {
@@ -652,6 +853,8 @@ document.querySelector("#resetProgressBtn").addEventListener("click", () => {
   state.examQuestions = [];
   state.examAnswers = {};
   state.examFinished = false;
+  state.realExamAnswers = {};
+  state.realExamFinished = false;
   render();
 });
 

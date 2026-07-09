@@ -712,6 +712,86 @@ window.CG_DATA = {
     { id: "q39", unit: "ut4", prompt: "En modelos de planilla, una regla clave es:", options: ["Separar datos de logica", "Mezclar supuestos dentro de formulas", "No documentar", "Usar formulas distintas en cada columna"], answer: 0, explanation: "Mejora auditabilidad, mantenimiento y reduce errores." },
     { id: "q40", unit: "ut4", prompt: "La rotacion de inventarios se calcula como:", options: ["Costo de ventas / stock promedio", "Stock final / precio", "Ventas / CF", "mc / precio"], answer: 0, explanation: "Luego dias de stock = 365 / rotacion." }
   ],
+  realExamSets: [
+    {
+      id: "agosto-2022",
+      title: "Examen Agosto 2022",
+      meta: "Examen real con casos practicos y teoria. Version interactiva para resolver en la app.",
+      questions: [
+        { id: "ag22-1", unit: "ut23", prompt: "El Ajuste SRL vendia 40.000 unidades a $100, con costo variable $80 y CF $50.000. Si el CV sube a $95 y quiere mantener la utilidad absoluta, cual debe ser el nuevo precio?", options: ["110", "115", "120", "125"], answer: 1, explanation: "Utilidad inicial: 40.000 x (100-80) - 50.000 = 750.000. Con CV 95: precio = 95 + (750.000+50.000)/40.000 = 115." },
+        { id: "ag22-2", unit: "ut3", prompt: "Jonthan Harris SA produce 100 tanques, CVu $10, costo completo $12, vende 72 a $20. Cual es la utilidad por costeo variable?", options: ["520", "560", "576", "720"], answer: 0, explanation: "Ventas 1.440 - CV vendido 720 - CF produccion 200 = 520." },
+        { id: "ag22-3", unit: "ut3", prompt: "Con los mismos datos de Jonthan Harris SA, cual es la utilidad por costeo completo?", options: ["520", "544", "576", "600"], answer: 2, explanation: "Ventas 1.440 - costo completo vendido 72 x 12 = 576." },
+        { id: "ag22-4", unit: "ut23", prompt: "La Inflacionaria SA tiene CV de fabricacion $152 y comision de vendedores del 10% del precio. Que precio permite una razon de contribucion del 40%?", options: ["253,33", "304", "380", "400"], answer: 1, explanation: "Contribucion = P - 152 - 0,10P = 0,90P - 152. Si RC=40%, 0,90P - 152 = 0,40P; P=304." },
+        { id: "ag22-5", unit: "ut23", prompt: "Mascotas SRL evalua una alternativa con CF adicionales $17.250, precio exportacion $300 y comision 10%. Si el margen local era $55, desde que volumen aproximado conviene exportar?", options: ["50", "80", "127", "300"], answer: 1, explanation: "La mejora de contribucion por unidad es 270 - 55 = 215. El punto de indiferencia es 17.250 / 215 = 80,23 unidades." },
+        { id: "ag22-6", unit: "ut4", prompt: "En un presupuesto integrado, que estado recoge principalmente las cobranzas?", options: ["Estado de Resultados", "Flujo de Caja", "Estado de Situacion Patrimonial", "Cuadro de costos fijos"], answer: 1, explanation: "Las cobranzas son movimientos de fondos, por lo tanto van al flujo de caja." },
+        { id: "ag22-7", unit: "ut23", prompt: "Si se comercializa un solo producto, la utilidad puede calcularse como:", options: ["Unidades vendidas x costo fijo unitario", "(Ventas en unidades - punto de equilibrio en unidades) x margen de contribucion unitario", "Ventas x costo variable unitario", "Punto de equilibrio x precio"], answer: 1, explanation: "Por encima del equilibrio, cada unidad adicional aporta su margen de contribucion a utilidad." },
+        { id: "ag22-8", unit: "ut23", prompt: "Con capacidad ociosa, vender productos con contribucion marginal positiva:", options: ["Aumenta el resultado aunque no cubra costo completo", "Disminuye el resultado si no cubre costo completo", "No modifica el resultado", "Solo sirve si cubre todos los fijos asignados"], answer: 0, explanation: "Si no aparecen costos fijos incrementales, la contribucion positiva mejora el resultado." },
+        { id: "ag22-9", unit: "ut4", prompt: "En compras presupuestadas, si se quiere aumentar el stock final deseado, las compras necesarias:", options: ["Bajan", "Suben", "No cambian", "Se vuelven cero"], answer: 1, explanation: "Compras = consumo o ventas previstas + stock final deseado - stock inicial." },
+        { id: "ag22-10", unit: "ut1", prompt: "La razon principal para usar informacion gerencial y no solo contabilidad financiera en estos casos es que:", options: ["La gerencial permite adaptar el modelo a la decision", "La financiera siempre es falsa", "La gerencial no usa numeros", "La financiera solo sirve para impuestos"], answer: 0, explanation: "La gerencial se adapta al objetivo: decidir, controlar y proyectar." }
+      ]
+    },
+    {
+      id: "julio-2023",
+      title: "Examen Julio 2023",
+      meta: "Formato Moodle: 16 preguntas. Esta version transforma las respuestas numericas en multiple opcion para entrenar sin papel.",
+      questions: [
+        { id: "jul23-1", unit: "ut3", prompt: "Caso 1: diferencia de utilidad entre costeo variable y completo. Resultado correcto segun examen:", options: ["244,100", "144,200", "344,100", "24,410"], answer: 0, explanation: "El examen informa como respuesta correcta 244,100. Repasa UT3 si fallaste." },
+        { id: "jul23-2", unit: "ut4", prompt: "Caso 2: presupuesto integrado de La Cerealera SA. Importe correcto solicitado:", options: ["6.546", "65.460", "654,6", "6.456"], answer: 0, explanation: "Respuesta correcta extraida del examen: 6.546." },
+        { id: "jul23-3", unit: "ut4", prompt: "Caso 3: presupuesto de La Citrica para enero-marzo. Resultado correcto:", options: ["26.220", "2.622", "22.620", "262.200"], answer: 0, explanation: "Respuesta correcta extraida del examen: 26.220." },
+        { id: "jul23-4", unit: "ut23", prompt: "Caso 4: empresa con tres productos A, B y C. Resultado correcto:", options: ["998,750", "899,750", "99,875", "1.098,750"], answer: 0, explanation: "Respuesta correcta extraida del examen: 998,750." },
+        { id: "jul23-5", unit: "ut23", prompt: "Caso 5: firma que vende computadoras con CVu $100, ventas mensuales $450.000 y CF $129.000. Resultado correcto:", options: ["960", "690", "1.290", "450"], answer: 0, explanation: "Respuesta correcta extraida del examen: 960." },
+        { id: "jul23-6", unit: "ut4", prompt: "Caso 6: ciclo de cuentas a cobrar. Resultado correcto:", options: ["36", "30", "69", "120"], answer: 0, explanation: "Respuesta correcta extraida del examen: 36." },
+        { id: "jul23-7", unit: "ut4", prompt: "Caso 7: deuda financiera por prestamo para maquinaria. Resultado correcto:", options: ["250.750", "205.750", "275.000", "150.750"], answer: 0, explanation: "Respuesta correcta extraida del examen: 250.750." },
+        { id: "jul23-8", unit: "ut4", prompt: "Caso 8: saldos de bienes de uso. Resultado correcto:", options: ["491.400", "419.400", "780.000", "288.600"], answer: 0, explanation: "Respuesta correcta extraida del examen: 491.400." },
+        { id: "jul23-9", unit: "ut4", prompt: "Caso 9: variaciones en estado de situacion patrimonial. Resultado correcto:", options: ["105.600", "150.600", "224.600", "377.400"], answer: 0, explanation: "Respuesta correcta extraida del examen: 105.600." },
+        { id: "jul23-10", unit: "ut4", prompt: "Caso 10: ventas presupuestadas por trimestres. Resultado correcto:", options: ["669.800", "696.800", "609.800", "838.000"], answer: 0, explanation: "Respuesta correcta extraida del examen: 669.800." },
+        { id: "jul23-11", unit: "ut4", prompt: "Caso 11: desvio en estado de resultados. Resultado correcto:", options: ["-190", "190", "-6.000", "69"], answer: 0, explanation: "Respuesta correcta extraida del examen: -190." },
+        { id: "jul23-12", unit: "ut4", prompt: "Caso 12: centros de responsabilidad y precio de transferencia. Resultado correcto:", options: ["14.600", "16.400", "12.500", "25.000"], answer: 0, explanation: "Respuesta correcta extraida del examen: 14.600." },
+        { id: "jul23-13", unit: "ut23", prompt: "Teorica: vender con contribucion marginal positiva pero sin cubrir costo completo produce disminucion del resultado.", options: ["Correcto", "Incorrecto", "Depende del IVA", "Solo si no hay costos variables"], answer: 1, explanation: "Es incorrecto si hay capacidad ociosa y no aparecen fijos incrementales." },
+        { id: "jul23-14", unit: "ut23", prompt: "Teorica: en un solo producto, utilidad = unidades sobre equilibrio x contribucion marginal unitaria.", options: ["Correcto", "Incorrecto", "Solo en multiproducto", "Solo con inventarios"], answer: 0, explanation: "Es una relacion basica del analisis CVU para un producto." },
+        { id: "jul23-15", unit: "ut1", prompt: "Teorica: los centros de inversion suelen ubicarse en niveles inferiores de la organizacion.", options: ["Correcto", "Incorrecto", "Siempre", "No aplica"], answer: 1, explanation: "Los centros de inversion suelen asociarse a niveles con mayor autonomia y responsabilidad." },
+        { id: "jul23-16", unit: "ut4", prompt: "Teorica: los desvios en el Estado de Situacion Patrimonial se relacionan con inversion y financiamiento.", options: ["Solo la primera afirmacion es correcta", "Las dos afirmaciones son correctas", "Ninguna es correcta", "Solo la segunda es correcta"], answer: 0, explanation: "El examen marcaba correcta la idea sobre ESP; la afirmacion sobre ciclo de cobranzas no era correcta." }
+      ]
+    },
+    {
+      id: "diciembre-2022",
+      title: "Examen Diciembre 2022",
+      meta: "Formato Moodle: 16 preguntas. Incluye obligatorias 1, 7 y 10.",
+      questions: [
+        { id: "dic22-1", unit: "ut23", prompt: "Reutilice SRL: nivel de actividad mensual desde el cual conviene comenzar a exportar.", options: ["127", "80", "300", "1.270"], answer: 0, explanation: "Respuesta correcta extraida del examen: 127." },
+        { id: "dic22-2", unit: "ut23", prompt: "La Multiple SA: proceso con producto A y subproducto X. Resultado correcto:", options: ["209,60", "206,90", "290,60", "20,96"], answer: 0, explanation: "Respuesta correcta extraida del examen: 209,60." },
+        { id: "dic22-3", unit: "ut4", prompt: "Politica de stock de Materia Prima Beta. Resultado correcto:", options: ["49.000", "9.800", "50.000", "4.900"], answer: 0, explanation: "Respuesta correcta extraida del examen: 49.000." },
+        { id: "dic22-4", unit: "ut4", prompt: "Presupuesto primer semestre 2023 con cuentas patrimoniales. Resultado correcto:", options: ["4.140.000", "414.000", "4.014.000", "41.400"], answer: 0, explanation: "Respuesta correcta extraida del examen: 4.140.000." },
+        { id: "dic22-5", unit: "ut4", prompt: "Flujo de fondos: asistencia financiera necesaria para saldo minimo.", options: ["130.000", "290.000", "660.000", "160.000"], answer: 0, explanation: "Respuesta correcta extraida del examen: 130.000." },
+        { id: "dic22-6", unit: "ut4", prompt: "Variacion en pasivos financieros presupuestados/reales. Resultado correcto:", options: ["224.600", "377.400", "105.600", "130.000"], answer: 0, explanation: "Respuesta correcta extraida del examen: 224.600." },
+        { id: "dic22-7", unit: "ut4", prompt: "Ingresos por ventas presupuestados de empresa A. Resultado correcto:", options: ["22.878.000", "2.287.800", "28.878.000", "21.878.000"], answer: 0, explanation: "Respuesta correcta extraida del examen: 22.878.000." },
+        { id: "dic22-8", unit: "ut4", prompt: "Presupuesto de equipamiento e indumentaria de Golf. Resultado correcto:", options: ["838.000", "883.000", "669.800", "491.400"], answer: 0, explanation: "Respuesta correcta extraida del examen: 838.000." },
+        { id: "dic22-9", unit: "ut4", prompt: "Bienes de uso presupuestados año 2. Resultado correcto:", options: ["2.318.400", "231.840", "2.138.400", "491.400"], answer: 0, explanation: "Respuesta correcta extraida del examen: 2.318.400." },
+        { id: "dic22-10", unit: "ut4", prompt: "Analisis de variaciones en ER. Resultado correcto:", options: ["-6.000", "6.000", "-190", "69"], answer: 0, explanation: "Respuesta correcta extraida del examen: -6.000." },
+        { id: "dic22-11", unit: "ut4", prompt: "Desvio del ultimo trimestre. Resultado correcto:", options: ["69", "96", "120", "-69"], answer: 0, explanation: "Respuesta correcta extraida del examen: 69." },
+        { id: "dic22-12", unit: "ut4", prompt: "La Oleaginosa SRL: presupuesto de aceite de oliva. Resultado correcto:", options: ["6.272", "62.720", "6.546", "26.220"], answer: 0, explanation: "Respuesta correcta extraida del examen: 6.272." },
+        { id: "dic22-13", unit: "ut3", prompt: "Si no existen inventarios iniciales ni finales de MP, PP y PT, la utilidad por costeo variable coincide con costeo completo.", options: ["Correcto", "Incorrecto", "Solo si hay IVA", "Solo si hay subproductos"], answer: 0, explanation: "Sin inventarios no hay fijos activados que generen diferencia." },
+        { id: "dic22-14", unit: "ut3", prompt: "Si el inventario final de productos terminados es igual a cero, siempre coinciden ambas utilidades.", options: ["Correcto", "Incorrecto", "Siempre", "Solo con costos variables"], answer: 1, explanation: "Pueden existir otros inventarios con costos fijos activados." },
+        { id: "dic22-15", unit: "ut23", prompt: "Ante capacidad ociosa, el costo completo unitario es el piso minimo para aceptar un pedido.", options: ["Correcto", "Incorrecto", "Solo con presupuesto", "Solo en UT4"], answer: 1, explanation: "El piso economico se basa en costos variables diferenciales y fijos incrementales." },
+        { id: "dic22-16", unit: "ut4", prompt: "Un presupuesto flexible ayuda a separar desvio por volumen de desvio por eficiencia/precio.", options: ["Correcto", "Incorrecto", "No aplica", "Solo en financiera"], answer: 0, explanation: "Es una herramienta de control presupuestal." }
+      ]
+    },
+    {
+      id: "febrero-2023",
+      title: "Examen Febrero 2023",
+      meta: "Formato Moodle: 16 preguntas. Version interactiva con preguntas practicas y teoricas representadas desde el PDF.",
+      questions: [
+        { id: "feb23-1", unit: "ut4", prompt: "Caso de presupuesto/flujo: resultado correcto de la pregunta practica 12.", options: ["120", "127", "69", "244,100"], answer: 0, explanation: "Respuesta correcta extraida del examen: 120." },
+        { id: "feb23-2", unit: "ut23", prompt: "La venta con contribucion marginal positiva produce disminucion del resultado si no cubre costo completo.", options: ["Correcto", "Incorrecto", "Solo si no hay capacidad", "Solo con inventarios"], answer: 1, explanation: "La afirmacion es incorrecta desde analisis marginal con capacidad ociosa." },
+        { id: "feb23-3", unit: "ut23", prompt: "Cuando el nivel de produccion aumenta, los costos fijos totales disminuyen.", options: ["Correcto", "Incorrecto", "Solo en costeo completo", "Solo si son variables"], answer: 1, explanation: "El costo fijo total no disminuye por aumentar produccion dentro del rango relevante; baja el fijo unitario." },
+        { id: "feb23-4", unit: "ut23", prompt: "Con restricciones de capacidad, debe priorizarse mayor contribucion marginal por unidad de recurso escaso.", options: ["Correcto", "Incorrecto", "Siempre mayor precio", "Siempre mayor RC"], answer: 0, explanation: "Ese es el criterio economico correcto." },
+        { id: "feb23-5", unit: "ut23", prompt: "Con restricciones de capacidad, siempre se prioriza mayor contribucion marginal sobre ventas.", options: ["Correcto", "Incorrecto", "Solo si no hay recurso escaso", "Solo en presupuestos"], answer: 1, explanation: "Debe mirarse contribucion por recurso escaso, no solo porcentaje sobre ventas." },
+        { id: "feb23-6", unit: "ut1", prompt: "Los precios de transferencia siempre mejoran una cultura colaborativa.", options: ["Correcto", "Incorrecto", "Siempre", "No depende de incentivos"], answer: 1, explanation: "Pueden generar conflictos si no se alinean con la cultura e incentivos." },
+        { id: "feb23-7", unit: "ut4", prompt: "Los desvios en el Estado de Situacion Patrimonial se relacionan con inversion y financiamiento.", options: ["Correcto", "Incorrecto", "No aplica", "Solo con IVA"], answer: 0, explanation: "La afirmacion fue considerada correcta en el examen." },
+        { id: "feb23-8", unit: "ut4", prompt: "El analisis de desvios en ventas y costos es siempre control estrategico.", options: ["Correcto", "Incorrecto", "Solo si hay presupuesto", "Solo si hay inventario"], answer: 1, explanation: "Es tipicamente control de gestion/operativo, no necesariamente estrategico." }
+      ]
+    }
+  ],
   realExams: [
     {
       id: "agosto-2022",
