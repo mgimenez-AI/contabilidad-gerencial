@@ -1,10 +1,11 @@
 const DATA = window.CG_DATA;
-const STORAGE_KEY = "contabilidad-gerencial-progress-v1";
+const STORAGE_KEY = "contabilidad-gerencial-progress-v2";
 
 const state = {
   view: "dashboard",
   selectedUnit: "ut23",
   selectedExercise: DATA.guidedExercises[0].id,
+  selectedRealExam: DATA.realExams[0].id,
   exerciseStep: 0,
   quizIndex: 0,
   quizUnit: "all",
@@ -19,16 +20,11 @@ const viewEl = document.querySelector("#view");
 const viewTitle = document.querySelector("#viewTitle");
 
 function loadProgress() {
+  const fallback = { seenLessons: [], completedExercises: [], quizCorrect: 0, quizTotal: 0, examRuns: [] };
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {
-      seenLessons: [],
-      completedExercises: [],
-      quizCorrect: 0,
-      quizTotal: 0,
-      examRuns: [],
-    };
+    return { ...fallback, ...(JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}) };
   } catch {
-    return { seenLessons: [], completedExercises: [], quizCorrect: 0, quizTotal: 0, examRuns: [] };
+    return fallback;
   }
 }
 
@@ -39,6 +35,10 @@ function saveProgress() {
 
 function uniquePush(list, item) {
   if (!list.includes(item)) list.push(item);
+}
+
+function unitLessons(unit) {
+  return (unit.topics || []).flatMap((topic) => topic.lessons || []);
 }
 
 function setView(view) {
@@ -52,10 +52,11 @@ function setView(view) {
 function titleForView(view) {
   return {
     dashboard: "Plan de estudio",
-    units: "Unidades temáticas",
-    practice: "Práctica guiada",
-    quiz: "Multiple opción",
+    units: "Unidades tematicas",
+    practice: "Practica guiada",
+    quiz: "Multiple opcion",
     exam: "Simulacro de examen",
+    realExam: "Simulacros reales",
     sources: "Material fuente",
   }[view];
 }
@@ -68,7 +69,7 @@ function daysToExam() {
 }
 
 function totalTrackableItems() {
-  return DATA.units.reduce((sum, unit) => sum + unit.lessons.length, 0) + DATA.guidedExercises.length;
+  return DATA.units.reduce((sum, unit) => sum + unitLessons(unit).length, 0) + DATA.guidedExercises.length;
 }
 
 function completedTrackableItems() {
@@ -76,12 +77,13 @@ function completedTrackableItems() {
 }
 
 function renderProgress() {
-  const pct = Math.round((completedTrackableItems() / totalTrackableItems()) * 100);
+  const total = totalTrackableItems();
+  const pct = total ? Math.round((completedTrackableItems() / total) * 100) : 0;
   document.querySelector("#progressPercent").textContent = `${pct}%`;
   document.querySelector("#progressBar").style.width = `${pct}%`;
   const hint = pct === 0
-    ? "Todavía no marcaste temas como vistos."
-    : `${completedTrackableItems()} de ${totalTrackableItems()} bloques completados.`;
+    ? "Todavia no marcaste temas como vistos."
+    : `${completedTrackableItems()} de ${total} bloques completados.`;
   document.querySelector("#progressHint").textContent = hint;
 }
 
@@ -91,39 +93,40 @@ function card(content, extraClass = "") {
 
 function renderDashboard() {
   const completedLessons = progress.seenLessons.length;
+  const completedExercises = progress.completedExercises.length;
   const bestExam = progress.examRuns.length ? Math.max(...progress.examRuns.map((run) => run.score)) : 0;
-  const next = DATA.units.find((unit) => unit.lessons.some((lesson) => !progress.seenLessons.includes(lesson.id))) || DATA.units[1];
+  const next = DATA.units.find((unit) => unitLessons(unit).some((lesson) => !progress.seenLessons.includes(lesson.id))) || DATA.units[1];
 
   viewEl.innerHTML = `
     <div class="grid three">
-      ${card(`<div class="metric"><span>Días reales de estudio</span><strong>${Math.ceil(daysToExam() / 2)}</strong></div><p>Como estudiás otra materia en paralelo, este tablero asume aproximadamente la mitad del tiempo disponible.</p>`)}
-      ${card(`<div class="metric"><span>Lecciones vistas</span><strong>${completedLessons}</strong></div><p>Marcá cada lección al cerrar una lectura activa, no por pasar la vista rápido.</p>`)}
-      ${card(`<div class="metric"><span>Mejor simulacro</span><strong>${bestExam}%</strong></div><p>Objetivo sugerido antes del examen: dos simulacros por encima de 80%.</p>`)}
+      ${card(`<div class="metric"><span>Dias reales de estudio</span><strong>${Math.ceil(daysToExam() / 2)}</strong></div><p>Como preparas otra materia en paralelo, el plan asume aproximadamente la mitad del tiempo disponible.</p>`)}
+      ${card(`<div class="metric"><span>Temas vistos</span><strong>${completedLessons}</strong></div><p>Marca cada tema solo cuando puedas explicarlo sin mirar el PDF.</p>`)}
+      ${card(`<div class="metric"><span>Mejor simulacro</span><strong>${bestExam}%</strong></div><p>Objetivo sugerido antes del examen: dos simulacros de 40 preguntas por encima de 80%.</p>`)}
     </div>
 
     ${card(`
       <h3>Ruta sugerida</h3>
       <div class="pill-row">
         <span class="pill required">1. Yardin obligatorio</span>
-        <span class="pill">2. Punto de equilibrio</span>
+        <span class="pill">2. Marginal y equilibrio</span>
         <span class="pill">3. Diferencia de utilidades</span>
-        <span class="pill">4. Presupuesto y desvíos</span>
+        <span class="pill">4. Presupuesto y desvios</span>
       </div>
-      <p>Empezá por UT2/3 porque combina teoría obligatoria y práctica frecuente. Luego fijá UT3 con inventarios y cerrá con UT4, que pide ordenar módulos.</p>
+      <p>Primero estudia UT2/3 porque concentra teoria obligatoria y practica numerica. Despues fija UT3 con inventarios y cerra con UT4, que exige ordenar ciclos y estados.</p>
       <button class="primary-btn" data-action="open-unit" data-unit="${next.id}">Continuar con ${next.short}</button>
     `)}
 
     <div class="grid two">
       ${card(`
-        <h3>Cómo estudiar con esta app</h3>
-        <p>Leé una unidad en modo tutor, resolvé al menos un ejercicio guiado y recién después pasá al multiple opción. El simulacro conviene usarlo cuando ya tengas dos unidades razonablemente firmes.</p>
+        <h3>Metodo de uso</h3>
+        <p>Lee cada subtema en modo tutor, resuelve un ejercicio guiado y despues usa multiple opcion. El simulacro largo mezcla todo y conviene hacerlo cuando ya tengas una primera vuelta completa.</p>
       `)}
       ${card(`
-        <h3>Fórmulas que tienen que salir solas</h3>
-        <div class="formula">mc = p - cv</div>
+        <h3>Formulas que tienen que salir solas</h3>
+        <div class="formula">mc = precio - CVu</div>
         <div class="formula">Qe = CF / mc</div>
         <div class="formula">Ve = CF / rc</div>
-        <div class="formula">Compras = ventas + SF deseado - SI</div>
+        <div class="formula">Compras = consumo + SF deseado - SI</div>
       `)}
     </div>
   `;
@@ -136,22 +139,25 @@ function renderUnits() {
     </button>
   `).join("");
   const unit = DATA.units.find((item) => item.id === state.selectedUnit);
-  const lessons = unit.lessons.map((lesson) => {
-    const seen = progress.seenLessons.includes(lesson.id);
-    return `
-      <section class="lesson">
-        <h4>${lesson.title}</h4>
-        <p>${lesson.body}</p>
-        <div class="feedback">${lesson.tutor}</div>
-        <button class="${seen ? "plain-btn" : "primary-btn"}" data-action="mark-lesson" data-lesson="${lesson.id}">
-          ${seen ? "Visto" : "Marcar como visto"}
-        </button>
-      </section>
-    `;
+  const topicBlocks = unit.topics.map((topic) => {
+    const lessons = topic.lessons.map((lesson) => {
+      const seen = progress.seenLessons.includes(lesson.id);
+      return `
+        <section class="lesson">
+          <h4>${lesson.title}</h4>
+          <p>${lesson.body}</p>
+          <div class="feedback">${lesson.tutor}</div>
+          <button class="${seen ? "plain-btn" : "primary-btn"}" data-action="mark-lesson" data-lesson="${lesson.id}">
+            ${seen ? "Visto" : "Marcar como visto"}
+          </button>
+        </section>
+      `;
+    }).join("");
+    return `<section class="topic-block"><h3>${topic.title}</h3>${lessons}</section>`;
   }).join("");
   const formulas = unit.formulas.length
     ? unit.formulas.map((formula) => `<div class="formula"><strong>${formula.label}:</strong> ${formula.value}</div>`).join("")
-    : `<p>No hay fórmulas centrales en esta unidad; concentrarse en conceptos y diferencias.</p>`;
+    : `<p>No hay formulas centrales en esta unidad; concentra el estudio en conceptos y diferencias.</p>`;
 
   viewEl.innerHTML = `
     <div class="tabs">${tabs}</div>
@@ -168,9 +174,9 @@ function renderUnits() {
         <button class="primary-btn" data-action="practice-unit" data-unit="${unit.id}">Practicar</button>
       </div>
     `)}
-    <div class="grid two">
-      ${card(`<h3>Lecciones tutor</h3>${lessons}`)}
-      ${card(`<h3>Fórmulas y atajos</h3>${formulas}`)}
+    <div class="grid two wide-left">
+      ${card(`<h3>Teoria por subtemas</h3>${topicBlocks}`)}
+      ${card(`<h3>Formulas y alertas</h3>${formulas}`)}
     </div>
   `;
 }
@@ -212,13 +218,13 @@ function renderPractice() {
         <h3>Paso ${state.exerciseStep + 1} de ${exercise.steps.length}</h3>
         <p>${step.prompt}</p>
         <div class="input-row">
-          <input id="exerciseAnswer" inputmode="decimal" placeholder="Escribí tu respuesta" />
+          <input id="exerciseAnswer" inputmode="decimal" placeholder="Escribi tu respuesta" />
           <button class="primary-btn" data-action="check-exercise">Corregir</button>
         </div>
         <div id="exerciseFeedback"></div>
         <div class="quiz-footer">
           <button class="plain-btn" data-action="prev-step">Anterior</button>
-          <button class="plain-btn" data-action="show-step">Ver explicación</button>
+          <button class="plain-btn" data-action="show-step">Ver explicacion</button>
           <button class="plain-btn" data-action="next-step">Siguiente</button>
         </div>
       `)}
@@ -250,7 +256,7 @@ function renderQuiz() {
   }).join("");
   const feedback = selected === undefined ? "" : `
     <div class="feedback ${selected === question.answer ? "ok" : "bad"}">
-      ${selected === question.answer ? "Bien." : "Revisá este punto."} ${question.explanation}
+      ${selected === question.answer ? "Bien." : "Revisa este punto."} ${question.explanation}
     </div>
   `;
 
@@ -274,7 +280,7 @@ function renderQuiz() {
 
 function startExam() {
   const shuffled = [...DATA.questions].sort(() => Math.random() - 0.5);
-  state.examQuestions = shuffled.slice(0, 10);
+  state.examQuestions = shuffled.slice(0, 40);
   state.examAnswers = {};
   state.examFinished = false;
 }
@@ -283,9 +289,9 @@ function renderExam() {
   if (!state.examQuestions.length) {
     viewEl.innerHTML = `
       ${card(`
-        <h3>Simulacro de examen</h3>
-        <p>El simulacro mezcla unidades y corrige al final. Usalo como diagnóstico: si fallás una pregunta, volvé a esa unidad y hacé un ejercicio guiado.</p>
-        <button class="primary-btn" data-action="start-exam">Iniciar simulacro de 10 preguntas</button>
+        <h3>Simulacro integral</h3>
+        <p>Mezcla las 40 preguntas del banco y corrige al final. Usalo como diagnostico serio: si fallas una pregunta, volve al subtema de esa unidad y resolvelo de nuevo.</p>
+        <button class="primary-btn" data-action="start-exam">Iniciar simulacro de 40 preguntas</button>
       `)}
     `;
     return;
@@ -307,16 +313,17 @@ function renderExam() {
     viewEl.innerHTML = `
       ${card(`
         <h3>Resultado: ${score}%</h3>
-        <p>${correct} correctas de ${state.examQuestions.length}. ${score >= 80 ? "Buen nivel para seguir con simulacros." : "Conviene volver a práctica guiada antes del próximo simulacro."}</p>
+        <p>${correct} correctas de ${state.examQuestions.length}. ${score >= 80 ? "Buen nivel para seguir con simulacros." : "Conviene volver a teoria y practica guiada antes del proximo simulacro."}</p>
         <button class="primary-btn" data-action="start-exam">Nuevo simulacro</button>
       `)}
-      ${card(`<h3>Corrección</h3>${review}`)}
+      ${card(`<h3>Correccion</h3>${review}`)}
     `;
     return;
   }
 
   const answered = Object.keys(state.examAnswers).length;
   const questions = state.examQuestions.map((question, index) => {
+    const unit = DATA.units.find((item) => item.id === question.unit);
     const options = question.options.map((option, optionIndex) => `
       <button class="option ${state.examAnswers[question.id] === optionIndex ? "selected" : ""}" data-action="answer-exam" data-question="${question.id}" data-answer="${optionIndex}">
         ${option}
@@ -324,6 +331,7 @@ function renderExam() {
     `).join("");
     return `
       <section class="lesson">
+        <span class="pill">${unit ? unit.short : "General"}</span>
         <h4>${index + 1}. ${question.prompt}</h4>
         <div class="option-list">${options}</div>
       </section>
@@ -332,7 +340,7 @@ function renderExam() {
 
   viewEl.innerHTML = `
     ${card(`
-      <div class="quiz-footer">
+      <div class="quiz-footer sticky-exam">
         <h3>Simulacro en curso</h3>
         <span class="pill">${answered}/${state.examQuestions.length} respondidas</span>
       </div>
@@ -342,12 +350,39 @@ function renderExam() {
   `;
 }
 
+function renderRealExam() {
+  const tabs = DATA.realExams.map((exam) => `
+    <button class="tab ${state.selectedRealExam === exam.id ? "active" : ""}" data-action="select-real-exam" data-exam="${exam.id}">
+      ${exam.title.replace("Examen ", "")}
+    </button>
+  `).join("");
+  const exam = DATA.realExams.find((item) => item.id === state.selectedRealExam);
+  const items = exam.items.map((item, index) => `
+    <section class="real-question">
+      <span class="pill">Item ${index + 1}</span>
+      <h4>${item.title}</h4>
+      <p>${item.prompt}</p>
+      <div class="feedback">${item.guide}</div>
+    </section>
+  `).join("");
+
+  viewEl.innerHTML = `
+    <div class="tabs">${tabs}</div>
+    ${card(`
+      <h3>${exam.title}</h3>
+      <p>${exam.meta}</p>
+      <div class="exam-note">Esta seccion usa los examenes reales como entrenamiento guiado. Para evitar aprender de memoria, las consignas estan convertidas en focos de resolucion y criterios de correccion.</div>
+      ${items}
+    `)}
+  `;
+}
+
 function renderSources() {
   const sources = DATA.sources.map((source) => `
     <div class="source-item">
       <div>
         <strong>${source.name}</strong>
-        <div><small>${source.unit} · ${source.type}${source.pages ? ` · ${source.pages} págs.` : ""}</small></div>
+        <div><small>${source.unit} - ${source.type}${source.pages ? ` - ${source.pages} pags.` : ""}</small></div>
       </div>
       ${source.required ? `<span class="pill required">Obligatorio</span>` : `<span class="pill">Fuente</span>`}
     </div>
@@ -355,7 +390,7 @@ function renderSources() {
   viewEl.innerHTML = `
     ${card(`
       <h3>Material procesado</h3>
-      <p>Esta app está armada a partir del material teórico y práctico que dejaste en la carpeta de la cátedra. El artículo obligatorio de Yardin está integrado en UT2/3.</p>
+      <p>La app esta armada a partir del material teorico, practico y examenes que compartiste. El articulo obligatorio de Yardin esta integrado en UT2/3.</p>
       <div class="source-list">${sources}</div>
     `)}
   `;
@@ -370,6 +405,7 @@ function render() {
   if (state.view === "practice") renderPractice();
   if (state.view === "quiz") renderQuiz();
   if (state.view === "exam") renderExam();
+  if (state.view === "realExam") renderRealExam();
   if (state.view === "sources") renderSources();
 }
 
@@ -379,7 +415,7 @@ function checkExerciseAnswer() {
   const value = Number(String(document.querySelector("#exerciseAnswer").value).replace(",", "."));
   const ok = Math.abs(value - step.answer) <= step.tolerance;
   const feedback = document.querySelector("#exerciseFeedback");
-  feedback.innerHTML = `<div class="feedback ${ok ? "ok" : "bad"}">${ok ? "Correcto." : "Todavía no."} ${step.explanation}</div>`;
+  feedback.innerHTML = `<div class="feedback ${ok ? "ok" : "bad"}">${ok ? "Correcto." : "Todavia no."} ${step.explanation}</div>`;
   if (ok && state.exerciseStep === exercise.steps.length - 1) {
     uniquePush(progress.completedExercises, exercise.id);
     saveProgress();
@@ -442,6 +478,10 @@ document.addEventListener("click", (event) => {
     state.exerciseStep = 0;
     renderPractice();
   }
+  if (action === "select-real-exam") {
+    state.selectedRealExam = target.dataset.exam;
+    renderRealExam();
+  }
   if (action === "check-exercise") checkExerciseAnswer();
   if (action === "show-step") showCurrentStepExplanation();
   if (action === "next-step") {
@@ -492,7 +532,7 @@ document.querySelector("#exportProgressBtn").addEventListener("click", () => {
 });
 
 document.querySelector("#resetProgressBtn").addEventListener("click", () => {
-  if (!confirm("¿Reiniciar progreso local?")) return;
+  if (!confirm("Reiniciar progreso local?")) return;
   localStorage.removeItem(STORAGE_KEY);
   Object.assign(progress, loadProgress());
   state.quizAnswers = {};

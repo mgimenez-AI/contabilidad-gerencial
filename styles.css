@@ -235,6 +235,10 @@ button {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
+.grid.two.wide-left {
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+}
+
 .grid.three {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -323,6 +327,23 @@ button {
 
 .lesson h4 {
   margin: 0 0 8px;
+}
+
+.topic-block {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 14px 0;
+  background: #fbfdff;
+}
+
+.topic-block:first-of-type {
+  margin-top: 0;
+}
+
+.topic-block > h3 {
+  color: var(--primary-dark);
+  margin-bottom: 8px;
 }
 
 .formula {
@@ -438,6 +459,36 @@ button {
   align-items: center;
 }
 
+.sticky-exam {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
+}
+
+.exam-note {
+  border-left: 4px solid var(--accent);
+  background: var(--soft-green);
+  color: #075e4a;
+  padding: 12px 14px;
+  border-radius: 0 8px 8px 0;
+  margin: 14px 0;
+}
+
+.real-question {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  margin: 12px 0;
+  background: #fff;
+}
+
+.real-question h4 {
+  margin: 10px 0 6px;
+}
+
 .source-list {
   display: grid;
   gap: 10px;
@@ -474,6 +525,7 @@ button {
 
   .grid.two,
   .grid.three,
+  .grid.two.wide-left,
   .exercise-layout {
     grid-template-columns: 1fr;
   }
