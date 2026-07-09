@@ -268,6 +268,19 @@ function formatCorrectAnswer(question) {
   return question.options[question.answer];
 }
 
+function renderBulletList(items = []) {
+  if (!items.length) return "";
+  return `<ul>${items.map((item) => `<li>${item}</li>`).join("")}</ul>`;
+}
+
+function renderStudyBox(title, content, extraClass = "") {
+  if (!content || (Array.isArray(content) && !content.length)) return "";
+  const body = Array.isArray(content)
+    ? renderBulletList(content)
+    : String(content).trim().startsWith("<") ? content : `<p>${content}</p>`;
+  return `<section class="study-box ${extraClass}"><h4>${title}</h4>${body}</section>`;
+}
+
 function unitPerformance() {
   return DATA.units.map((unit) => {
     const attempts = progress.questionAttempts.filter((item) => item.unit === unit.id);
@@ -483,6 +496,12 @@ function renderTopicPage() {
   const formulas = unit.formulas.length
     ? unit.formulas.map((formula) => `<div class="formula"><strong>${formula.label}:</strong> ${formula.value}</div>`).join("")
     : `<p>Este subtema es principalmente conceptual.</p>`;
+  const lessonFormulaList = lesson.formulas && lesson.formulas.length
+    ? lesson.formulas.map((formula) => `<div class="formula"><strong>${formula.label}:</strong> ${formula.value}</div>`).join("")
+    : "";
+  const sourceList = lesson.sources && lesson.sources.length
+    ? `<div class="source-tags">${lesson.sources.map((source) => `<span class="pill">${source}</span>`).join("")}</div>`
+    : "";
 
   viewEl.innerHTML = `
     <div class="tabs">${tabs}</div>
@@ -497,6 +516,7 @@ function renderTopicPage() {
         <h3>${lesson.title}</h3>
         <p class="lead-text">${lesson.body}</p>
         <div class="feedback">${lesson.tutor}</div>
+        ${sourceList}
         <div class="topic-actions">
           <button class="${seen ? "plain-btn" : "primary-btn"}" data-action="mark-lesson" data-lesson="${lesson.id}">
             ${seen ? "Visto" : "Marcar como visto"}
@@ -507,6 +527,15 @@ function renderTopicPage() {
           <h4>Formulas y recordatorios de la unidad</h4>
           ${formulas}
         </section>
+        <div class="study-grid">
+          ${renderStudyBox("Explicacion estilo tutor", lesson.tutorExtended)}
+          ${renderStudyBox("Conceptos clave", lesson.keyConcepts)}
+          ${renderStudyBox("Formulas propias del subtema", lessonFormulaList)}
+          ${renderStudyBox("Errores tipicos", lesson.typicalMistakes, "warning")}
+          ${renderStudyBox("Conexion con ejercicios", lesson.exerciseConnection)}
+          ${renderStudyBox("Mini preguntas de control", lesson.controlQuestions)}
+          ${renderStudyBox("Como lo toman en examen", lesson.examUse, "exam")}
+        </div>
         <h3>Desarrollo teorico del subtema</h3>
         ${dives || `<p>No hay desarrollo ampliado para este punto todavia.</p>`}
       </article>
@@ -771,12 +800,26 @@ function renderSources() {
       ${source.required ? `<span class="pill required">Obligatorio</span>` : `<span class="pill">Fuente</span>`}
     </div>
   `).join("");
+  const pdfMap = (DATA.pdfMap || []).map((item) => `
+    <div class="source-item">
+      <div>
+        <strong>${item.pdf}</strong>
+        <div><small>${item.units.join(", ")} - ${item.role}</small></div>
+      </div>
+      <span class="pill required">Mapeado</span>
+    </div>
+  `).join("");
   viewEl.innerHTML = `
     ${card(`
       <h3>Material procesado</h3>
       <p>La app esta armada a partir del material teorico, practico y examenes que compartiste. El articulo obligatorio de Yardin esta integrado en UT2/3.</p>
       <div class="source-list">${sources}</div>
     `)}
+    ${pdfMap ? card(`
+      <h3>Mapa PDF a unidades</h3>
+      <p>Este mapa guia la ampliacion por tandas: cada PDF alimenta las paginas teoricas, la practica y las alertas de examen de su unidad.</p>
+      <div class="source-list">${pdfMap}</div>
+    `) : ""}
   `;
 }
 

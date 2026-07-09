@@ -443,6 +443,50 @@ button {
   margin: 14px 0;
 }
 
+.source-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 12px 0 0;
+}
+
+.study-grid {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.study-box {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff;
+}
+
+.study-box h4 {
+  margin-top: 0;
+  color: var(--primary-dark);
+}
+
+.study-box p,
+.study-box ul {
+  margin-bottom: 0;
+}
+
+.study-box li {
+  margin: 7px 0;
+}
+
+.study-box.warning {
+  background: #fffaf2;
+  border-color: #f2d7ad;
+}
+
+.study-box.exam {
+  background: var(--soft-blue);
+  border-color: #b8c7dc;
+}
+
 .formula-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
