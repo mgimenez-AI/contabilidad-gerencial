@@ -180,6 +180,396 @@
     };
   }
 
+  Object.assign(lessonExtras, {
+    "ut3-l1": {
+      sources: ["UT3 Diferencia de Utilidades", "UT2/3 Modelos y Analisis Marginal", "Yardin obligatorio"],
+      tutorExtended: "El estado por costeo variable esta pensado para leer gestion: muestra ventas, costos variables, contribucion y luego estructura. Su pregunta no es cuanto vale el inventario para terceros, sino cuanto aportaron las ventas del periodo.",
+      keyConcepts: [
+        "El costo variable de produccion integra el costo de las unidades vendidas y de los inventarios.",
+        "Los costos fijos de produccion se cargan al resultado del periodo.",
+        "La contribucion marginal muestra el excedente disponible para cubrir estructura.",
+        "Es especialmente claro para analizar desempeno comercial y decisiones de corto plazo."
+      ],
+      formulas: [
+        { label: "Estado variable", value: "Ventas - costos variables = contribucion marginal - costos fijos = utilidad" },
+        { label: "Inventario variable", value: "Unidades en stock x costo variable unitario" }
+      ],
+      typicalMistakes: [
+        "Restar costos fijos de produccion dentro del costo de ventas variable.",
+        "Confundir contribucion marginal con utilidad neta.",
+        "No separar costos fijos productivos de otros costos fijos del periodo."
+      ],
+      exerciseConnection: "En Pangolin/Ponderosa, el estado variable permite ver que todos los fijos de produccion del ejercicio pasan por resultado, aunque haya stock final.",
+      controlQuestions: [
+        "Donde quedan los costos fijos de produccion en costeo variable?",
+        "Que muestra la contribucion marginal?",
+        "Por que este formato ayuda a decisiones gerenciales?"
+      ],
+      examUse: "Te pueden pedir armar estados comparativos. En variable, no actives fijos de produccion en PT o PP; cargalos al periodo."
+    },
+    "ut3-l2": {
+      sources: ["UT3 Diferencia de Utilidades", "Yardin obligatorio"],
+      tutorExtended: "El costeo completo mira el producto como portador de costos de fabricacion, incluidos fijos de produccion absorbidos. Por eso los inventarios pueden llevar costos fijos al activo.",
+      keyConcepts: [
+        "El costo completo incluye costos variables y fijos de produccion absorbidos.",
+        "El costo de ventas completo depende de las unidades vendidas y del criterio de salida, como FIFO.",
+        "El inventario final puede contener costos fijos de produccion.",
+        "La utilidad puede diferir del variable por activacion o liberacion de fijos."
+      ],
+      formulas: [
+        { label: "Costo completo unitario", value: "Costo variable unitario + fijo de produccion absorbido unitario" },
+        { label: "Fijo absorbido", value: "Costo completo unitario - costo variable unitario" }
+      ],
+      typicalMistakes: [
+        "Restar dos veces el fijo de produccion: dentro del costo completo y otra vez como fijo del periodo.",
+        "Olvidar el criterio FIFO cuando hay inventarios iniciales.",
+        "Pensar que mayor utilidad por completo siempre significa mejor gestion."
+      ],
+      exerciseConnection: "Los casos Pangolin y Ponderosa obligan a completar ER y ESP por ambos modelos para aislar que parte de los fijos queda en inventarios.",
+      controlQuestions: [
+        "Que costo queda activado en el inventario bajo costeo completo?",
+        "Por que el FIFO importa si hay inventario inicial?",
+        "Cuando coinciden completo y variable?"
+      ],
+      examUse: "Si te dan costo completo unitario y variable unitario, la diferencia suele revelar el fijo absorbido por unidad."
+    },
+    "ut3-l3": {
+      sources: ["UT3 Diferencia de Utilidades"],
+      tutorExtended: "Cuando producis mas de lo que vendes, parte de la estructura productiva queda estacionada en el stock bajo costeo completo. En variable, esa estructura se reconoce entera en el periodo.",
+      keyConcepts: [
+        "Produccion mayor que ventas implica aumento de inventario de productos terminados o en proceso.",
+        "Bajo completo, el aumento de inventario retiene fijos de produccion en el activo.",
+        "Bajo variable, esos fijos se reconocen como gasto del periodo.",
+        "Por eso la utilidad por completo suele ser mayor que por variable."
+      ],
+      formulas: [
+        { label: "Diferencia por aumento de PT", value: "Aumento de unidades en PT x fijo absorbido unitario" },
+        { label: "Regla", value: "Produccion > ventas => utilidad completo > utilidad variable" }
+      ],
+      typicalMistakes: [
+        "Concluir que la empresa gano mas economicamente solo porque produjo stock.",
+        "Olvidar productos en proceso al analizar inventarios.",
+        "Usar unidades vendidas para calcular fijo activado, cuando corresponde mirar inventario."
+      ],
+      exerciseConnection: "Pangolin I y Ponderosa I muestran inventario final: el foco esta en cuanto fijo quedo activado en PT o PP.",
+      controlQuestions: [
+        "Por que completo da mayor utilidad si sube el inventario?",
+        "Que riesgo gerencial hay en producir para stock?",
+        "Que inventarios debes revisar: PT, PP o ambos?"
+      ],
+      examUse: "Pregunta clasica: explicar el signo de la diferencia. Si aumenta inventario, completo suele quedar por encima."
+    },
+    "ut3-l4": {
+      sources: ["UT3 Diferencia de Utilidades"],
+      tutorExtended: "Cuando vendes mas de lo que producis, estas sacando del activo costos fijos de periodos anteriores. El completo 'trae' esos fijos al resultado actual.",
+      keyConcepts: [
+        "Ventas mayores que produccion implican reduccion de inventarios.",
+        "Bajo completo, salen del inventario costos fijos activados anteriormente.",
+        "Bajo variable, esos fijos no estaban activados en el inventario.",
+        "Por eso la utilidad por completo suele ser menor que por variable."
+      ],
+      formulas: [
+        { label: "Diferencia por baja de inventario", value: "Disminucion de unidades en stock x fijo absorbido historico" },
+        { label: "Regla", value: "Ventas > produccion => utilidad completo < utilidad variable" }
+      ],
+      typicalMistakes: [
+        "Usar el fijo unitario del periodo para inventarios iniciales con otra cuota.",
+        "Ignorar FIFO cuando se venden unidades de inventario inicial.",
+        "No distinguir costo fijo del ejercicio y fijo contenido en inventarios previos."
+      ],
+      exerciseConnection: "Pangolin II/III/IV y Ponderosa II trabajan inventarios iniciales, produccion del ejercicio y FIFO; ahi se ve la liberacion de fijos.",
+      controlQuestions: [
+        "Que pasa con la utilidad completa si disminuye el inventario?",
+        "Por que puede importar la cuota fija de periodos anteriores?",
+        "Que rol cumple FIFO en estos ejercicios?"
+      ],
+      examUse: "Si el enunciado trae IIPT/IIPP, no resuelvas de memoria: identifica que fijos historicos salen al costo de ventas."
+    },
+    "ut3-l5": {
+      sources: ["UT3 Diferencia de Utilidades"],
+      tutorExtended: "La formula conceptual no reemplaza al estado, pero te da un radar: la diferencia entre utilidades vive en los costos fijos de produccion que entran o salen de inventarios.",
+      keyConcepts: [
+        "La diferencia se explica por fijos de produccion activados o liberados.",
+        "Productos terminados y productos en proceso pueden contener diferencias entre costo completo y variable.",
+        "Si no hay variacion de inventarios, las utilidades tienden a coincidir.",
+        "Cuando hay inventarios iniciales y finales, conviene comparar saldos de fijos contenidos."
+      ],
+      formulas: [
+        { label: "Fijos en inventario", value: "Valor inventario completo - valor inventario variable" },
+        { label: "Diferencia de utilidades", value: "Fijos en IF - fijos en II" }
+      ],
+      typicalMistakes: [
+        "Mirar solo inventario final y olvidar inventario inicial.",
+        "No considerar productos en proceso.",
+        "Usar la diferencia de costos unitarios sin multiplicar por unidades correctas."
+      ],
+      exerciseConnection: "Los ejercicios piden ecuaciones de diferencia de utilidades y de costos fijos del ejercicio: separa fijos del periodo y fijos en inventarios.",
+      controlQuestions: [
+        "Como calculas los fijos contenidos en un inventario?",
+        "Por que se resta el inventario inicial?",
+        "Que significa que no haya diferencia relevante entre modelos?"
+      ],
+      examUse: "Muy probable como calculo corto: identificar fijos contenidos en inventarios y deducir utilidad por el otro modelo."
+    },
+    "ut3-l6": {
+      sources: ["UT3 Diferencia de Utilidades", "Yardin obligatorio"],
+      tutorExtended: "La lectura gerencial es la parte jugosa: una utilidad que sube por producir mas que vender no necesariamente significa mejor negocio. Puede ser stock acumulado disfrazado de resultado.",
+      keyConcepts: [
+        "El costeo completo puede incentivar producir para aumentar utilidad contable.",
+        "El stock inmoviliza capital y puede generar obsolescencia, almacenamiento y riesgo comercial.",
+        "El costeo variable muestra mejor la contribucion de lo efectivamente vendido.",
+        "La diferencia entre modelos debe interpretarse, no solo calcularse."
+      ],
+      typicalMistakes: [
+        "Celebrar mayor utilidad completa sin revisar inventarios.",
+        "No vincular UT3 con la complementariedad de Yardin.",
+        "Confundir resultado contable con flujo de caja o desempeno comercial."
+      ],
+      exerciseConnection: "En examenes, despues de calcular diferencias, pueden pedir interpretacion. La respuesta debe advertir si la utilidad surge por stock y no por ventas.",
+      controlQuestions: [
+        "Por que producir para stock puede mejorar utilidad completa?",
+        "Que riesgos tiene acumular inventario?",
+        "Como se conecta esta unidad con Yardin?"
+      ],
+      examUse: "Para preguntas teoricas, explica que ambos modelos pueden ser correctos, pero sirven para objetivos distintos y generan incentivos distintos."
+    },
+    "ut4-l1": {
+      sources: ["UT4 Ficha ciclo elaboracion presupuesto", "Casos UT IV"],
+      tutorExtended: "El presupuesto es una conversacion ordenada entre estrategia y numeros. No nace en Excel: nace en objetivos, recursos, responsables y supuestos.",
+      keyConcepts: [
+        "Forma parte de la planificacion de corto plazo.",
+        "Distribuye recursos a actividades especificas.",
+        "Debe elaborarse antes del periodo y aprobarse por la alta direccion.",
+        "Requiere participacion de responsables de ingresos, costos e inversiones."
+      ],
+      formulas: [
+        { label: "Idea base", value: "Objetivos + recursos + supuestos => ER, ESP y FC presupuestados" }
+      ],
+      typicalMistakes: [
+        "Tratar el presupuesto como simple pronostico.",
+        "Armarlo sin participacion de responsables.",
+        "No conectar ventas con compras, stock, cobranza y caja."
+      ],
+      exerciseConnection: "Casos como MODELA, LA FORTALEZA y LA INTEGRADORA arrancan por supuestos de ventas y luego exigen derivar el resto de estados.",
+      controlQuestions: [
+        "Por que el presupuesto empieza por ventas?",
+        "Que significa que sea una herramienta de coordinacion?",
+        "Que documentos finales produce el proceso?"
+      ],
+      examUse: "Pueden pedir finalidad y requisitos: plan previo, aprobacion, participacion, control posterior y medidas correctivas."
+    },
+    "ut4-l2": {
+      sources: ["UT4 Ficha ciclo elaboracion presupuesto", "Casos UT IV"],
+      tutorExtended: "Presupuestar sin controlar es escribir deseos. El valor aparece cuando comparas realidad contra plan, entendes causas y corregis.",
+      keyConcepts: [
+        "Etapas: planificacion, presupuesto, ejecucion, registro, comparacion, analisis de desvios y correccion.",
+        "La contabilidad registra hechos reales para compararlos con lo presupuestado.",
+        "El control permite aprendizaje y ajuste.",
+        "Los objetivos cumplidos pueden vincularse a incentivos."
+      ],
+      typicalMistakes: [
+        "Calcular desvios sin explicar causas.",
+        "No distinguir cambios de precio, volumen, eficiencia o oportunidad.",
+        "Comparar contra un presupuesto que ya no refleja el nivel real de actividad."
+      ],
+      exerciseConnection: "NOVUELA pide analizar variaciones en ER y ESP: ahi se ve que el control no termina en la resta presupuestado-real.",
+      controlQuestions: [
+        "Que informacion necesitas para explicar un desvio?",
+        "Por que el control puede llevar a medidas correctivas?",
+        "Que diferencia hay entre presupuesto y realidad contable?"
+      ],
+      examUse: "Si preguntan proceso presupuestal, nombra etapas y remata con comparacion, analisis y correccion."
+    },
+    "ut4-l3": {
+      sources: ["UT4 Ficha ciclo elaboracion presupuesto", "Caso Integrador"],
+      tutorExtended: "Venta, cobranza y deudores son tres caras de la misma operacion. Si las mezclas, el presupuesto se rompe: el ER muestra devengado, el FC muestra caja y el ESP muestra saldo pendiente.",
+      keyConcepts: [
+        "Ventas estimadas impactan en ER por devengado.",
+        "Cobranzas impactan en FC cuando se perciben.",
+        "Deudores por ventas quedan en ESP al cierre.",
+        "Las condiciones contado/credito determinan la distribucion temporal."
+      ],
+      formulas: [
+        { label: "Ventas", value: "Unidades x precio" },
+        { label: "Deudores finales", value: "Ventas a credito no cobradas al cierre" },
+        { label: "Cobranzas", value: "Ventas contado + cobro de creditos del periodo + cobro de saldos iniciales" }
+      ],
+      typicalMistakes: [
+        "Poner toda venta como cobranza.",
+        "Olvidar saldos iniciales de deudores.",
+        "No separar clientes contado y credito."
+      ],
+      exerciseConnection: "LA INTEGRADORA cobra 60% contado y 40% al mes siguiente; MODELA separa mayoristas a credito y minoristas contado.",
+      controlQuestions: [
+        "Donde va la venta devengada?",
+        "Donde va el saldo no cobrado?",
+        "Como afecta vender a 90 dias al flujo de caja?"
+      ],
+      examUse: "Muy tomable en presupuesto: si te piden ER, ESP y FC, etiqueta cada dato antes de calcular."
+    },
+    "ut4-l4": {
+      sources: ["UT4 Ficha ciclo elaboracion presupuesto", "Caso Integrador", "Casos UT IV"],
+      tutorExtended: "Compras no es lo mismo que costo de ventas, y pagos no es lo mismo que compras. Este subtema es el corazon de los presupuestos con stock.",
+      keyConcepts: [
+        "Las compras dependen de ventas/consumo esperado, stock inicial y stock final deseado.",
+        "El costo de ventas impacta en ER cuando se venden las unidades.",
+        "El stock final impacta en ESP.",
+        "Los pagos a proveedores dependen de condiciones de credito."
+      ],
+      formulas: [
+        { label: "Compras en unidades", value: "Consumo o ventas + stock final deseado - stock inicial" },
+        { label: "Stock final", value: "Stock inicial + compras - salidas" },
+        { label: "Pagos", value: "Compras contado + pagos de compras a credito vencidas + saldos iniciales" }
+      ],
+      typicalMistakes: [
+        "Confundir unidades compradas con unidades vendidas.",
+        "Llevar compras completas al costo de ventas.",
+        "Olvidar pagos diferidos a proveedores."
+      ],
+      exerciseConnection: "LA INTEGRADORA exige FIFO con stock inicial y compras de distintos costos; MODELA agrega stock de seguridad y plazo de proveedores.",
+      controlQuestions: [
+        "Por que una compra puede no ser costo de ventas del periodo?",
+        "Como se calcula stock final deseado?",
+        "Que cambia si el proveedor financia a 60 dias?"
+      ],
+      examUse: "En presupuestos, arma primero el cuadro fisico de unidades; despues valoriza y recien ahi separa ER, ESP y FC."
+    },
+    "ut4-l5": {
+      sources: ["UT4 Ficha ciclo elaboracion presupuesto", "Casos UT IV"],
+      tutorExtended: "Cada rubro tiene una personalidad presupuestal: algunos afectan resultado y caja, otros resultado sin caja, otros caja y balance. La habilidad es ubicar cada impacto.",
+      keyConcepts: [
+        "Gastos operativos pueden ser fijos, variables, contado o credito.",
+        "Inversiones van al ESP y su pago al FC.",
+        "Amortizaciones afectan ER y valor neto del activo, pero no caja.",
+        "Prestamos afectan caja y pasivo; intereses afectan ER y FC si se pagan.",
+        "IVA e impuestos pueden generar pasivos aunque no se paguen en el periodo."
+      ],
+      formulas: [
+        { label: "Amortizacion lineal", value: "Valor amortizable / vida util" },
+        { label: "Interes sobre saldo", value: "Saldo de deuda x tasa" }
+      ],
+      typicalMistakes: [
+        "Poner amortizaciones en flujo de caja.",
+        "Olvidar deuda final despues de pagar cuotas.",
+        "No separar capital de intereses en prestamos."
+      ],
+      exerciseConnection: "NOVUELA y MODELA incluyen prestamos, intereses, ventas de activos, amortizaciones e impuestos: cada elemento debe ubicarse en ER, ESP y FC.",
+      controlQuestions: [
+        "Por que la amortizacion no es salida de caja?",
+        "Que parte de un prestamo va al ER?",
+        "Como se refleja una inversion financiada?"
+      ],
+      examUse: "Te pueden dar muchos datos mezclados. Clasifica cada uno: ER, ESP, FC o combinacion."
+    },
+    "ut4-l6": {
+      sources: ["Casos UT IV - NOVUELA", "UT4 Ficha presupuesto"],
+      tutorExtended: "Un desvio no es un numero rojo o verde: es una pista. La pregunta gerencial es que lo causo, si era controlable y que accion corresponde.",
+      keyConcepts: [
+        "Desvio: diferencia entre presupuestado y real.",
+        "Puede ser favorable o desfavorable segun su efecto en resultado, caja o patrimonio.",
+        "Debe analizarse por causa: precio, volumen, costo, eficiencia, financiamiento, timing.",
+        "El analisis de ESP muestra impactos acumulados, no solo resultado del periodo."
+      ],
+      formulas: [
+        { label: "Desvio", value: "Real - Presupuestado, interpretado segun el rubro" },
+        { label: "Desvio de ventas", value: "Efecto precio + efecto volumen, si el caso lo permite" }
+      ],
+      typicalMistakes: [
+        "Llamar favorable a todo aumento de saldo.",
+        "No explicar causa del desvio.",
+        "Mezclar desvio economico con desvio financiero."
+      ],
+      exerciseConnection: "NOVUELA pide analizar variaciones del resultado y del estado patrimonial: precio menor, cantidad mayor, costos distintos y operaciones no realizadas.",
+      controlQuestions: [
+        "Un mayor saldo de deudores es favorable?",
+        "Como separarias efecto precio y volumen?",
+        "Por que un desvio de caja puede no coincidir con un desvio de resultado?"
+      ],
+      examUse: "Si piden analisis de variaciones, escribi causa y consecuencia. No entregues solo una tabla."
+    },
+    "ut4-l7": {
+      sources: ["UT4 Ficha presupuesto", "Casos UT IV"],
+      tutorExtended: "El presupuesto flexible evita castigar o premiar por vender mas o menos sin separar eficiencia. Ajusta lo que deberia haber pasado al nivel real de actividad.",
+      keyConcepts: [
+        "Presupuesto original: armado para el nivel esperado.",
+        "Presupuesto flexible: reexpresado para el nivel real de actividad.",
+        "Permite separar desvios por volumen de desvios por eficiencia o precio.",
+        "Es especialmente util con costos variables."
+      ],
+      formulas: [
+        { label: "Costo variable flexible", value: "CVu presupuestado x actividad real" },
+        { label: "Desvio controlable", value: "Real - presupuesto flexible" }
+      ],
+      typicalMistakes: [
+        "Comparar costo variable real contra presupuesto fijo cuando cambio el volumen.",
+        "Tratar todo aumento de costos como ineficiencia.",
+        "No identificar que costos son variables respecto de la actividad."
+      ],
+      exerciseConnection: "En NOVUELA, vender mas pasajes explica parte del mayor costo total; hay que separar volumen de precio/costo unitario.",
+      controlQuestions: [
+        "Por que gastar mas puede ser razonable si vendiste mas?",
+        "Que dato necesitas para flexibilizar un presupuesto?",
+        "Que costos no se flexibilizan automaticamente?"
+      ],
+      examUse: "Si el caso trae presupuesto y real con distinto volumen, sospecha que quieren enfoque flexible."
+    },
+    "ut4-l8": {
+      sources: ["UT4 Gestion de Stocks - Rotacion", "Caso Integrador"],
+      tutorExtended: "Stock es disponibilidad, pero tambien dinero detenido. Gestionarlo es equilibrar riesgo de quiebre, costo financiero, almacenamiento y rotacion.",
+      keyConcepts: [
+        "Stock medio: promedio de unidades o valor inmovilizado.",
+        "Rotacion: cuantas veces se renueva el stock promedio en el periodo.",
+        "Lote de compra mayor reduce frecuencia pero aumenta stock medio.",
+        "Stock de seguridad protege contra rupturas, pero inmoviliza capital."
+      ],
+      formulas: [
+        { label: "Frecuencia de compra", value: "Consumo del periodo / lote de compra" },
+        { label: "Stock medio simple", value: "Lote / 2, si consumo es uniforme y no hay stock de seguridad" },
+        { label: "Valor stock promedio", value: "Stock medio x costo unitario" },
+        { label: "Velocidad de rotacion", value: "Consumo o costo anual / stock promedio" }
+      ],
+      typicalMistakes: [
+        "Pensar que lote mas grande siempre conviene.",
+        "Interpretar rotacion alta como siempre positiva.",
+        "No distinguir stock fisico de inversion monetaria."
+      ],
+      exerciseConnection: "El caso Rotativa pide frecuencia de compras, stock medio, inversion en stock y velocidad de rotacion para distintos lotes.",
+      controlQuestions: [
+        "Que efecto tiene aumentar el lote sobre stock medio?",
+        "Por que la rotacion puede ser demasiado alta?",
+        "Como calculas inversion promedio en stock?"
+      ],
+      examUse: "Puede aparecer como calculo corto con lotes, consumo diario y rotacion. Dibuja mentalmente el serrucho de stock."
+    },
+    "ut4-l9": {
+      sources: ["UT4 Principios de construccion de modelos en planilla electronica", "Casos UT IV"],
+      tutorExtended: "Un modelo bueno no es el mas ingenioso; es el que otra persona puede revisar, usar y modificar sin romperlo. En examen, esto se traduce en claridad, modularidad y trazabilidad.",
+      keyConcepts: [
+        "Construir por modulos: ventas, compras, gastos, inversiones, financiamiento, estados.",
+        "Separar datos y logica: no mezclar supuestos escritos a mano dentro de formulas.",
+        "Preferir formulas claras antes que formulas brillantes e indescifrables.",
+        "Autodocumentar con etiquetas, comentarios y flujos logicos.",
+        "Usar columnas homogeneas, preferentemente para el tiempo."
+      ],
+      formulas: [
+        { label: "Regla de oro", value: "Datos en celdas de entrada; relaciones en formulas; reportes en salidas" }
+      ],
+      typicalMistakes: [
+        "Poner constantes ocultas dentro de formulas.",
+        "Usar formulas largas con anidamientos dificiles de auditar.",
+        "Mezclar modulos y generar enlaces imprevisibles.",
+        "No dejar etiquetas que expliquen origen y destino de datos."
+      ],
+      exerciseConnection: "MODELA y LA FORTALEZA son ejercicios de planilla: si el modelo no separa datos y logica, cualquier cambio de inflacion, TC, plazo o mix obliga a rehacer todo.",
+      controlQuestions: [
+        "Por que separar datos y logica reduce errores?",
+        "Que ventaja tiene trabajar por modulos?",
+        "Como autodocumentarias un modulo de ventas?"
+      ],
+      examUse: "En teoria pueden pedir los cuatro principios: modularidad, separar datos/logica, claridad de formulas y autodocumentacion."
+    }
+  });
+
   for (const unit of window.CG_DATA.units) {
     for (const topic of unit.topics || []) {
       for (const lesson of topic.lessons || []) {
@@ -198,6 +588,6 @@
     { pdf: "Yardin - Costeo completo y costeo variable", units: ["UT2/3", "UT3"], role: "Lectura obligatoria especifica: complementariedad entre modelos y uso correcto segun objetivo." },
     { pdf: "Casos Analisis Marginal y soluciones", units: ["UT2/3"], role: "Practica obligatoria: punto de equilibrio, utilidad objetivo, pedidos, mezcla y restricciones." },
     { pdf: "Diferencia de Utilidades", units: ["UT3"], role: "Practica obligatoria para inventarios y diferencias entre costeo completo y variable." },
-    { pdf: "Presupuesto, desvios, stocks y planillas", units: ["UT4"], role: "Base teorica y practica obligatoria para la segunda tanda de ampliacion." }
+    { pdf: "Presupuesto, desvios, stocks y planillas", units: ["UT4"], role: "Base teorica y practica obligatoria: presupuesto, control, stocks, rotacion y modelos en planilla." }
   ];
 })();
