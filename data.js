@@ -754,9 +754,11 @@ window.CG_DATA = {
           type: "numeric",
           prompt: "Caso 4 - Mascotas SRL: determine el nivel de actividad mensual de la sucursal Malvin a partir del cual conviene abrir el local.",
           context: "Local actual: precio $120, costo variable $65, costos fijos mensuales $300.000 y capacidad plena.\nSucursal Malvin: costos fijos adicionales $17.250, precio $300, comision variable 10% del precio.",
-          answer: 80.23,
-          tolerance: 0.05,
-          explanation: "Contribucion local sacrificada = 120 - 65 = 55. Contribucion Malvin = 300 - 30 = 270. Mejora por unidad = 215. Punto de indiferencia = 17.250 / 215 = 80,23 unidades. Si pide unidades enteras 'a partir', conviene desde 81."
+          answer: 115,
+          tolerance: 0.01,
+          changelog: "AUDIT-2026-07",
+          auditNote: "Correccion: la sucursal tambien conserva el costo variable del producto de $65; antes solo se descontaba la comision.",
+          explanation: "Contribucion local sacrificada = 120 - 65 = 55. Contribucion Malvin = 300 - 65 - 30 = 205. Mejora incremental por unidad = 205 - 55 = 150. Punto de indiferencia = 17.250 / 150 = 115 unidades."
         },
         {
           id: "ag22-5",
@@ -859,7 +861,9 @@ window.CG_DATA = {
           context: "Ventas: 20.000 kg a $20. Compras: 90.000 kg a $15. Existencia inicial: 5.000 kg a $14. FIFO. Exento de IVA. Costos fijos: salarios $2.730, GAV $30.000, amortizaciones $5.000. Intereses no integran RAII.",
           answer: 6546,
           tolerance: 0.01,
-          explanation: "Para Q mayor a 5.000, margen unitario despues de FIFO normalizado queda $5,5 aproximadamente. RAII cero exige cubrir $37.730. Respuesta Moodle: 6.546 unidades."
+          changelog: "AUDIT-2026-07",
+          auditNote: "Correccion metodologica: se reemplaza el margen normalizado por el desarrollo FIFO usado por la catedra.",
+          explanation: "Para Q > 5.000, el costo de ventas FIFO es 5.000 x 14 + (Q - 5.000) x 15 = 15Q - 5.000. Ventas = 20Q. Costos fijos RAII = 2.730 + 30.000 + 5.000 = 37.730. Entonces RAII = 20Q - (15Q - 5.000) - 37.730 = 5Q + 5.000 - 37.730 = 0. Q = 32.730 / 5 = 6.546 unidades."
         },
         {
           id: "jul23-3",
