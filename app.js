@@ -128,7 +128,9 @@ function findLessonContext(lessonId = state.selectedLesson) {
   return { unit, topic, lesson: topic.lessons[0] };
 }
 
-function relatedDeepDives(unit, lessonId) {
+function relatedDeepDives(unit, lessonOrId) {
+  const lesson = typeof lessonOrId === "object" ? lessonOrId : null;
+  const lessonId = lesson ? lesson.id : lessonOrId;
   const map = {
     "ut1-l1": [0], "ut1-l2": [0], "ut1-l3": [1], "ut1-l4": [1],
     "ut1-l5": [2], "ut1-l6": [3],
@@ -142,8 +144,42 @@ function relatedDeepDives(unit, lessonId) {
     "ut4-l9": [5],
   };
   const dives = unit.deepDives || [];
-  const indexes = map[lessonId] || dives.map((_, index) => index);
+  if (lesson && Array.isArray(lesson.deepDives) && lesson.deepDives.length) return lesson.deepDives;
+  if (!Object.prototype.hasOwnProperty.call(map, lessonId)) {
+    return lessonId && lessonId.includes("-audit-") ? [] : dives;
+  }
+  const indexes = map[lessonId];
   return indexes.map((index) => dives[index]).filter(Boolean);
+}
+
+function renderDevelopmentSections(unit, lesson) {
+  const mappedDives = relatedDeepDives(unit, lesson).map((section) => `
+    <section class="deep-dive">
+      <h3>${section.title}</h3>
+      ${section.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+      ${section.examTip ? `<div class="exam-note">${section.examTip}</div>` : ""}
+    </section>
+  `).join("");
+  if (mappedDives) return mappedDives;
+  if (!lesson.id.includes("-audit-")) return `<p>No hay desarrollo ampliado para este punto todavia.</p>`;
+
+  const formulaDetails = lesson.formulas && lesson.formulas.length
+    ? `<p><strong>Formulas del tema:</strong> ${lesson.formulas.map((formula) => `${formula.label}: ${formula.value}`).join(" | ")}</p>`
+    : "";
+  const controlDetails = lesson.controlQuestions && lesson.controlQuestions.length
+    ? `<p><strong>Preguntas de control:</strong> ${lesson.controlQuestions.join(" ")}</p>`
+    : "";
+  return `
+    <section class="deep-dive audit-development">
+      <h3>${lesson.title}</h3>
+      <p>${lesson.body}</p>
+      <p>${lesson.tutorExtended || lesson.tutor}</p>
+      ${formulaDetails}
+      <p><strong>Conexion con ejercicios:</strong> ${lesson.exerciseConnection || "Usalo para resolver casos integradores y preguntas reales."}</p>
+      <p><strong>Como lo toman en examen:</strong> ${lesson.examUse || "Suelen pedir el calculo y la interpretacion del resultado."}</p>
+      ${controlDetails}
+    </section>
+  `;
 }
 
 function renderSyllabus(unit, activeLessonId = "") {
@@ -486,13 +522,7 @@ function renderTopicPage() {
       ${item.short}
     </button>
   `).join("");
-  const dives = relatedDeepDives(unit, lesson.id).map((section) => `
-    <section class="deep-dive">
-      <h3>${section.title}</h3>
-      ${section.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
-      ${section.examTip ? `<div class="exam-note">${section.examTip}</div>` : ""}
-    </section>
-  `).join("");
+  const development = renderDevelopmentSections(unit, lesson);
   const formulas = unit.formulas.length
     ? unit.formulas.map((formula) => `<div class="formula"><strong>${formula.label}:</strong> ${formula.value}</div>`).join("")
     : `<p>Este subtema es principalmente conceptual.</p>`;
@@ -537,7 +567,7 @@ function renderTopicPage() {
           ${renderStudyBox("Como lo toman en examen", lesson.examUse, "exam")}
         </div>
         <h3>Desarrollo teorico del subtema</h3>
-        ${dives || `<p>No hay desarrollo ampliado para este punto todavia.</p>`}
+        ${development}
       </article>
     </div>
   `;
@@ -1028,37 +1058,47 @@ document.addEventListener("click", (event) => {
   if (action === "open-unit" || action === "select-unit") {
     state.selectedUnit = target.dataset.unit;
     setView("units");
+    return;
   }
   if (action === "open-topic-page") {
     state.selectedUnit = target.dataset.unit;
     state.selectedLesson = target.dataset.lesson;
     setView("topicPage");
+    requestAnimationFrame(() => {
+      document.querySelector(".topic-reading")?.scrollIntoView({ block: "start", behavior: "smooth" });
+    });
+    return;
   }
   if (action === "back-to-unit") {
     setView("units");
+    return;
   }
   if (action === "practice-unit") {
     const exercise = DATA.guidedExercises.find((item) => item.unit === target.dataset.unit) || DATA.guidedExercises[0];
     state.selectedExercise = exercise.id;
     state.exerciseStep = 0;
     setView("practice");
+    return;
   }
   if (action === "mark-lesson") {
     uniquePush(progress.seenLessons, target.dataset.lesson);
     saveProgress();
     if (state.view === "topicPage") renderTopicPage();
     else renderUnits();
+    return;
   }
   if (action === "select-exercise") {
     state.selectedExercise = target.dataset.exercise;
     state.exerciseStep = 0;
     setView("practice");
+    return;
   }
   if (action === "select-real-exam") {
     state.selectedRealExam = target.dataset.exam;
     state.realExamAnswers = {};
     state.realExamFinished = false;
     renderRealExam();
+    return;
   }
   if (action === "check-exercise") checkExerciseAnswer();
   if (action === "show-step") showCurrentStepExplanation();
